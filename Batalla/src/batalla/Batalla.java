@@ -40,14 +40,15 @@ public class Batalla {
         Persona persona=new Persona();
         persona.posicionarFlota();
         
-        flotaPersona= new ArrayList();
-        flotaPersona=persona.getPosicionesOcupadasFlota();
+        
+        //flotaPersona= new ArrayList();
+        //flotaPersona=persona.getPosicionesOcupadasFlota();
         
         
         //crear flota ordenador
         Ordenador ordenador=new Ordenador();
-        ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
-        
+        //ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
+        /*
         flotaOrdenador=new ArrayList();
         flotaOrdenador=ordenador.getPosicionesOcupadasFlota();
         
@@ -119,7 +120,7 @@ public class Batalla {
 	    }else{
 	        System.out.println("agua");
 	    }       
-
+*/
     }
     
 }

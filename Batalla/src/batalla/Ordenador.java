@@ -30,6 +30,7 @@ public class Ordenador extends Participante{
     
     @Override
     public void posicionarFlota() {
+    	String orientacionAleatoria="";
         posicionesOcupadasFlotaOrdenador= new ArrayList();
         posicionesPerimetralesFlotaOrdenador= new ArrayList();
         
@@ -43,16 +44,18 @@ public class Ordenador extends Participante{
         for (int i=0;i<GlobalConstants.NUMERO_SUBMARINOS;i++){
             do{      
                 do{
+                	
                     coordOrdenador=new Coordenada();
-                    coordOrdenador.coordenadaAleatoria();;               
-                    orientacionOrdenador=new Orientacion();
-                    orientacionOrdenador.OrientacionAleatoria();
+                    coordOrdenador.coordenadaAleatoria();
+                    
+                    orientacionAleatoria= pedirOrientacionAleatoria();
+                    
                     submarinoOrdenador= new Submarino();
-                }while (submarinoOrdenador.cabidaTablero(coordOrdenador, orientacionOrdenador.getOrientacion(),GlobalConstants.TAMANO_SUBMARINO)==true);
-            }while (submarinoOrdenador.comprobarBarco(submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
+                }while (submarinoOrdenador.cabidaTablero(coordOrdenador, orientacionAleatoria,GlobalConstants.TAMANO_SUBMARINO)==true);
+            }while (submarinoOrdenador.comprobarBarco(submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
             tableroBarcosOrdenador.colocarBarcoEnTablero(submarinoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_SUBMARINO);
             //tableroBarcosOrdenador.imprimirTableroBarcos();
-            for (int j=0;j<submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()).size();j++){
+            for (int j=0;j<submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria).size();j++){
                 posicionesOcupadasFlotaOrdenador.add(submarinoOrdenador.posicionesOcupadasBarco.get(j));
             }
             for (int k=0;k<submarinoOrdenador.getPosicionesPerimetroBarco().size();k++){
@@ -208,4 +211,20 @@ public class Ordenador extends Participante{
 		}
     	
     }
+    public String pedirOrientacionAleatoria(){
+    	String orientacionAleatoria="";
+    	
+        int repartirOrientacion;//de 0 a 4 la orientación será horizontal de 4 a 9 vertical
+        repartirOrientacion=(int)(Math.random()*10);
+        
+        if (repartirOrientacion<4){
+            orientacionAleatoria="h";
+        }
+        else{
+            orientacionAleatoria="v";
+        }
+    	
+    	return orientacionAleatoria;
+    }
 }
+

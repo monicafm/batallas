@@ -55,25 +55,67 @@ public abstract class Barco {
             //el barco no ocupa una posicione de otro barco
             for (Coordenada coo: arrayFlota){
                     if(co.getCoordenadaX()==coo.getCoordenadaX()){
-                        if(co.getCoordenadaY()==coo.getCoordenadaY()){
-                             System.out.println("Hay posiciones que ya están ocupadas por un barco. Piense en otra localización...");
+                        if(co.getCoordenadaY()==coo.getCoordenadaY()){                           
                              resultado=true;
                         }
                 }
             }
+            
             //el barco no ocupa el perímetro de otro barco
             for (Coordenada coor: arrayPerimetro){
                     if(co.getCoordenadaX()==coor.getCoordenadaX()){
-                        if(co.getCoordenadaY()==coor.getCoordenadaY()){
-                             System.out.println("Hay posiciones que invade el perímetro de algún barco.Piense en otra localización...");
+                        if(co.getCoordenadaY()==coor.getCoordenadaY()){                            
                              resultado=true;
                         }
                 }
             }
         }
+        if (resultado==true){
+        	System.out.println("Hay posiciones que ya están ocupadas por un barco o en su perímetro. Piense en otra localización...");
+        }
         return resultado;
     }
-    
+    public Coordenada[] getPosicionesBarco2(Coordenada c,String o){ //si
+        
+        coorX=c.getCoordenadaX();
+        coorY=c.getCoordenadaY();
+
+        barc = new Coordenada[tamano];
+  
+        for (int i=0; i<tamano; i++){
+            barc[i]=new Coordenada();
+        }       
+              
+        barc[0].setCoordenadaX(coorX); 
+        barc[0].setCoordenadaY(coorY);
+        
+        orientacion=o;
+        for (int i=1; i<tamano; i++){
+            /*si orientacion es horizontal*/
+            if (orientacion.equalsIgnoreCase("h")){
+                
+                coorX=barc[i-1].getCoordenadaX();
+                barc[i].setCoordenadaX(coorX);
+                
+                coorY=barc[i-1].getCoordenadaY()+1;
+                barc[i].setCoordenadaY(coorY);
+                
+                if (coorY>GlobalConstants.ALTO_MAX_TABLERO){System.out.println("el barco se sale del tablero");}
+            }
+            else if (orientacion.equalsIgnoreCase("v")){
+            /*si orientacion es vertical*/            
+                coorX=barc[i-1].getCoordenadaX()+1;
+                barc[i].setCoordenadaX(coorX);
+                
+                coorY=barc[i-1].getCoordenadaY();
+                barc[i].setCoordenadaY(coorY);
+                
+                if (coorX>GlobalConstants.ANCHO_MAX_TABLERO){System.out.println("el barco se sale del tablero");}
+            }
+        }       
+
+        return barc;
+    }
     public ArrayList<Coordenada> getPosicionesBarco(Coordenada c,String o){ //si
                
         coorX=c.getCoordenadaX();
@@ -119,6 +161,17 @@ public abstract class Barco {
         }
         return posicionesOcupadasBarco;
     }
+    public void imprimirPosBarco(){//sí
+
+        Iterator ite=posicionesOcupadasBarco.iterator();
+        System.out.print("posiciones ocupadas: ");
+        while(ite.hasNext()){
+            Object recorrerCoor =ite.next();
+            Coordenada recor= (Coordenada) recorrerCoor;
+            System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
+        }
+    }
+    
     public Coordenada[] getBarcoConstruido(){//si
         return barc;
     }

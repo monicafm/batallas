@@ -19,7 +19,7 @@ public class Coordenada {
     public void Coordenada(){
         boolean restriccion;
         
-                do{ 
+               //do{ 
 
                 System.out.print("Introducir fila y columna (ejemplo 1-10): ");
                   
@@ -29,6 +29,7 @@ public class Coordenada {
                     //x=x-1;//se resta 1 porque el usuario no tiene en cuenta la fila 0
                     y=teclado.nextInt()-1;
                     //y=y-1;//se resta 1 porque el usuario no tiene en cuenta la columna 0
+                   /*
                     restriccion=false;
                     if (x<0){
                        restriccion= true;
@@ -43,6 +44,7 @@ public class Coordenada {
                         restriccion= true;
                     }
                 }while(restriccion==true);
+                */
     }
     public void coordenadaAleatoria(){
         x=(int)(Math.random()*10);
