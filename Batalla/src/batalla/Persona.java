@@ -31,11 +31,13 @@ public class Persona extends Participante{
     private ArrayList<Coordenada> aPortaPersona;
     
     private ArrayList<Barco> flota;
+    private ArrayList<Coordenada[]> flotaP;
     
     @Override
     public void posicionarFlota() {
     	
     	flota= new ArrayList<Barco>();
+    	flotaP= new ArrayList<Coordenada[]>();
         posicionesOcupadasFlota= new ArrayList<Coordenada>();       
         posicionesPerimetralesFlota= new ArrayList<Coordenada>();
         
@@ -88,7 +90,8 @@ public class Persona extends Participante{
             tableroBarcosPersona.colocarBarcoEnTablero(submarinoPersona2.getBarcoConstruido(),GlobalConstants.TAMANO_SUBMARINO);
             tableroBarcosPersona.imprimirTableroBarcos();    
             
-            flota=getFlota(submarinoPersona2);
+            flota=getFlota(submarinoPersona2);//??
+            flotaP=getFlotaP(submarinoPersona2.getBarcoConstruido());
             posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aSubPersona);
             posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(submarinoPersona2);
         
@@ -119,7 +122,8 @@ public class Persona extends Participante{
             tableroBarcosPersona.colocarBarcoEnTablero(fragataPersona1.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA);
             tableroBarcosPersona.imprimirTableroBarcos();    
             
-            flota=getFlota(fragataPersona1);
+            flota=getFlota(fragataPersona1);//??
+            flotaP=getFlotaP(fragataPersona1.getBarcoConstruido());
             posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aFraPersona);
             posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(fragataPersona1);
         
@@ -148,7 +152,8 @@ public class Persona extends Participante{
             tableroBarcosPersona.colocarBarcoEnTablero(acorazadoPersona1.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);
             tableroBarcosPersona.imprimirTableroBarcos();    
             
-            flota=getFlota(acorazadoPersona1);
+            flota=getFlota(acorazadoPersona1);//??
+            flotaP=getFlotaP(acorazadoPersona1.getBarcoConstruido());
             posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aAcoPersona);
             posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(acorazadoPersona1);
         
@@ -177,7 +182,8 @@ public class Persona extends Participante{
             tableroBarcosPersona.colocarBarcoEnTablero(portaavionesPersona.getBarcoConstruido(),GlobalConstants.TAMANO_PORTAAVIONES);
             tableroBarcosPersona.imprimirTableroBarcos();    
             
-            flota=getFlota(portaavionesPersona);
+            flota=getFlota(portaavionesPersona);//??
+            flotaP=getFlotaP(portaavionesPersona.getBarcoConstruido());
             posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aPortaPersona);
             posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(portaavionesPersona);
         
@@ -242,7 +248,7 @@ public class Persona extends Participante{
 
     public Coordenada crearDisparo(){
         disparoPersona= new Coordenada();
-        disparoPersona.Coordenada();
+        disparoPersona.coordenada();
         
         return disparoPersona;
     }
@@ -274,7 +280,7 @@ public class Persona extends Participante{
         	do{ 
         		restriccion=false;
         		coordenada= new Coordenada();
-        		coordenada.Coordenada();
+        		coordenada.coordenada();
         		//tiene que ser en minúscula
             	x=coordenada.getCoordenadaX();            	
             	y=coordenada.getCoordenadaY();
@@ -357,6 +363,16 @@ public class Persona extends Participante{
         return true;
     }
     
+    public ArrayList<Coordenada[]> getFlotaP(){
+      	return flotaP;
+    }
+    
+    public ArrayList<Coordenada[]> getFlotaP(Coordenada[] barco){
+    	//ArrayList<Coordenada[]> flot;
+      	flotaP.add(barco);
+      	return flotaP;
+    }
+    
     public ArrayList<Coordenada> getPosicionesOcupadasFlota2(ArrayList<Coordenada> al){    	
     	for (int j=0;j<al.size();j++){
     		posicionesOcupadasFlota.add(al.get(j));
@@ -375,5 +391,20 @@ public class Persona extends Participante{
      * me falta un método que me permita ver que hay algo dentro de flota... iterar...
      */
     
+    public Coordenada disparar(ArrayList<Coordenada> conjuntoDisparos){// crea un disparo y comprueba que no fue usado
+    	Coordenada disparo=new Coordenada();
+    	boolean resultado;
+    	     	
+    	do{
+    		resultado=false;//??   		
+    		System.out.print("Piense en su disparo... ");
+        	disparo.coordenada();
+        	//System.out.println("coor:"+disparo.getCoordenadaX()+","+disparo.getCoordenadaY());
+        	resultado=comprobarConjuntoDisparos(disparo, conjuntoDisparos);
+    	}while(resultado);
+    	
+    	//System.out.println(" salgo del bucle coor:"+disparo.getCoordenadaX()+","+disparo.getCoordenadaY());
+    	return disparo;
+    }
 }
 

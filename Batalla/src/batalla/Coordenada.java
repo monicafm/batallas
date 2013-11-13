@@ -16,8 +16,8 @@ public class Coordenada {
     //private int nuevaX;
     //private int nuevaY;
     
-    public void Coordenada(){
-        boolean restriccion;
+    public void coordenada(){
+        //boolean restriccion;
         
                //do{ 
 
@@ -49,7 +49,7 @@ public class Coordenada {
     public void coordenadaAleatoria(){
         x=(int)(Math.random()*10);
         y=(int)(Math.random()*10);
-        //System.out.print(x+","+y+"; ");
+        System.out.print(x+","+y+"; ");
     }
     public int getCoordenadaX(){
         return x;

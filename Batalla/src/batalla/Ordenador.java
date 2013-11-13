@@ -28,6 +28,7 @@ public class Ordenador extends Participante{
 	private ArrayList<Coordenada> aPortaOrdenador=new ArrayList<Coordenada>();
     
     private ArrayList<Barco> flotaOrdenador;
+    private ArrayList<Coordenada[]>flotaO;
     private ArrayList<Coordenada> posicionesOcupadasFlotaOrdenador;
     private ArrayList<Coordenada> posicionesPerimetralesFlotaOrdenador;
     
@@ -50,6 +51,7 @@ public class Ordenador extends Participante{
         tableroBarcosOrdenador.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
         
     	flotaOrdenador=new ArrayList<Barco>();
+    	flotaO= new ArrayList<Coordenada[]>();
         posicionesOcupadasFlotaOrdenador= new ArrayList<Coordenada>();
         posicionesPerimetralesFlotaOrdenador= new ArrayList<Coordenada>();
         
@@ -69,7 +71,8 @@ public class Ordenador extends Participante{
             //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(submarinoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_SUBMARINO);
             
-            flotaOrdenador=getFlota(submarinoOrdenador);
+            flotaOrdenador=getFlota(submarinoOrdenador);//??
+            flotaO=getFlotaO(submarinoOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aSubOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(submarinoOrdenador);            
         }
@@ -88,7 +91,8 @@ public class Ordenador extends Participante{
             //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(fragataOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA); 
             
-            flotaOrdenador=getFlota(fragataOrdenador);
+            flotaOrdenador=getFlota(fragataOrdenador);//??
+            flotaO=getFlotaO(fragataOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aFraOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(fragataOrdenador);
         
@@ -108,7 +112,8 @@ public class Ordenador extends Participante{
             //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(acorazadoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);  
             
-            flotaOrdenador=getFlota(acorazadoOrdenador);
+            flotaOrdenador=getFlota(acorazadoOrdenador);//??
+            flotaO=getFlotaO(acorazadoOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aAcoOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(acorazadoOrdenador);
            
@@ -136,7 +141,8 @@ public class Ordenador extends Participante{
             tableroBarcosOrdenador.imprimirTableroBarcos();  
             //FIN PRUEBA-ELIMINAR
             
-            flotaOrdenador=getFlota(portaavionesOrdenador);
+            flotaOrdenador=getFlota(portaavionesOrdenador);//??
+            flotaO=getFlotaO(portaavionesOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aPortaOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(portaavionesOrdenador);
         
@@ -157,11 +163,14 @@ public class Ordenador extends Participante{
                 Coordenada recor= (Coordenada) recorrerCoor;
                 System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
             }
+            System.out.println();
             //FIN PRUEBA-ELIMINAR          
             
         }
         
     }
+    
+    
     
     public Coordenada crearDisparoAleatorio(){
     	int x;
@@ -260,6 +269,7 @@ public class Ordenador extends Participante{
         }while(resultado==true);
         return coordOrdenador;
     }
+    
     public String pedirOrientacionAleatoria(){
     	String orientacionAleatoria="";
     	
@@ -283,6 +293,21 @@ public class Ordenador extends Participante{
         return posicionesOcupadasFlotaOrdenador; 
     }
     
+    
+    public ArrayList<Coordenada[]> getFlotaO(){
+      	return flotaO;
+    }
+    
+    public ArrayList<Coordenada[]> getFlotaO(Coordenada[] barco){
+    	//ArrayList<Coordenada[]> flot;
+      	flotaO.add(barco);
+      	return flotaO;
+    }
+    
+    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(){
+    	return posicionesOcupadasFlotaOrdenador; 
+    }
+    
     public ArrayList<Coordenada> getPosicionesPerimetralesFlotaOrdenador(Barco ba){
     	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
     		posicionesPerimetralesFlotaOrdenador.add(ba.posicionesPerimetralesBarco.get(k));
@@ -290,5 +315,17 @@ public class Ordenador extends Participante{
         return posicionesPerimetralesFlotaOrdenador; 
     }
     
+    public Coordenada disparar(ArrayList<Coordenada> conjuntoDisparos){// crea un disparo y comprueba que no fue usado
+    	Coordenada disparo=new Coordenada();
+    	boolean resultado= false;
+    	     	
+    	do{
+    		System.out.print("Piense en su disparo... ");
+        	disparo.coordenadaAleatoria();    	
+        	resultado=comprobarConjuntoDisparos(disparo, conjuntoDisparos);
+    	}while(resultado);
+    	
+    	return disparo;
+    }
 }
 

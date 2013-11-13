@@ -5,6 +5,7 @@
 package batalla;
 import batalla.Coordenada;
 
+import java.util.Iterator;
 import java.util.Scanner;
 import java.lang.*;
 import java.util.ArrayList;
@@ -28,17 +29,21 @@ public class Batalla {
         Coordenada disOrdenador;
         ArrayList<Coordenada> flotaPersona;
         ArrayList<Coordenada> flotaOrdenador;
+        ArrayList<Barco> flotaOrd;
+        ArrayList<Coordenada[]> flotaO;
         Tablero tableroDisparoPersona;
         Tablero tableroBarcosP;
         Tablero taberoDisparoOrdenador;
         
         ArrayList<Coordenada> conjuntoDisparosPersona;
+        
         ArrayList<Coordenada> conjuntoDisparosOrdenador;
         
+        boolean acierto;
         
         //crear flota persona
         Persona persona=new Persona();
-        persona.posicionarFlota();
+        //persona.posicionarFlota();
         
         
         //flotaPersona= new ArrayList();
@@ -48,23 +53,67 @@ public class Batalla {
         //crear flota ordenador
         Ordenador ordenador=new Ordenador();
         ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
-        /*
-        flotaOrdenador=new ArrayList();
-        flotaOrdenador=ordenador.getPosicionesOcupadasFlota();
-        
+       
+        flotaOrdenador=new ArrayList<Coordenada>();
+        flotaOrdenador=ordenador.getPosicionesOcupadasFlotaOrdenador();
+        flotaOrd=new ArrayList<Barco>();
+        flotaOrd= ordenador.getFlota();
+        flotaO=new ArrayList<Coordenada[]>();
+        flotaO= ordenador.getFlotaO();
         
         
         //disparos - tablero persona
-        disPersona= new Coordenada();
-        System.out.print("Piense en su disparo... ");
-        disPersona= persona.crearDisparo();//se crea el primer disparo de la persona
-        conjuntoDisparosPersona=new ArrayList();
-        conjuntoDisparosPersona.add(disPersona);//añado el primer disparo
+        
+        
+        
+        //disPersona= new Coordenada();
+        //System.out.print("Piense en su disparo... ");
+        //disPersona= persona.crearDisparo();//se crea el primer disparo de la persona
+        conjuntoDisparosPersona=new ArrayList<Coordenada>();
+        conjuntoDisparosOrdenador=new ArrayList<Coordenada>();
+        //conjuntoDisparosPersona.add(disPersona);//añado el primer disparo
+        
         tableroDisparoPersona= new Tablero();
         tableroDisparoPersona.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
+        //acierto=false;
         
-         
-
+        for(int i=0;i<2;i++){
+        //disparo Persona
+        disPersona=persona.disparar(conjuntoDisparosPersona);
+        conjuntoDisparosPersona=persona.añadirDisparo(disPersona,conjuntoDisparosPersona);
+        
+        
+        /*
+         * es un disparo certero? dispara la persona contra la flota del ordenador
+         * compruebo el disparo en el array de coordenadas (aciertaEnCoordenadaContraria(disparo,flotaContraria) o en el array de barcos?
+         * tengo que cambiar mi tablero de disparos y mostrarlo (antes de disparar tambien tengo que mostrar mi tablero de disparos)
+         * como cambio tocado a hundido??
+         * 
+         * 
+         */
+        //tableroDisparoPersona.imprimirTableroDisparos();//se muestra el tablero de disparos
+        
+       
+        //persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
+        //persona.esTocado(disPersona,flotaOrd);//??
+        
+        acierto=persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
+        tableroDisparoPersona.anotarDisparoEnTablero(disPersona,acierto);//se apunta el disparo
+        tableroDisparoPersona.imprimirTableroDisparos();
+        persona.marcarTocados(disPersona,flotaO);//las coordenadas acertadas se cambian a 100 
+        }
+       
+        
+        
+        
+        //disparo Ordenador
+        disOrdenador=ordenador.disparar(conjuntoDisparosOrdenador);
+        conjuntoDisparosOrdenador=ordenador.añadirDisparo(disOrdenador,conjuntoDisparosOrdenador);
+        //es disparo certero? dispara el ordenador contra la flota de la persona
+        
+        
+        
+/*
        //DISPARO PERSONA
 	        if(persona.realizarDisparo(disPersona,flotaOrdenador)==true){//devuelve verdadero si es tocado
 	            do{
@@ -121,7 +170,25 @@ public class Batalla {
 	        System.out.println("agua");
 	    }       
 */
+        
+
+        
     }
+    
+    
+    
+    public void añadirDisparo(Coordenada d){
+    
+    	}
+    
+    //public void comprobarDisparo(
+    
+    
+     
+    
+    public void anotarDisparo(Coordenada c,Tablero t) {
+    }
+    
     
 }
 

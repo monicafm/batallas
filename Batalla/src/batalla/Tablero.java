@@ -19,7 +19,7 @@ public class Tablero {
     private int tamano;
     
     
-   public void Tablero(int altura,int anchura){/*es necesario crear las variables altura y anchura? D -método solo tablero
+   public void Tablero(int altura,int anchura){/*es necesario crear las variables altura y anchura? D -método solo tablero ??
 ¿por qué no podemos poner ANCHO_MAX_TABLERO y ALTO_MAX_TABLERO*/
         this.alto= altura;
         ancho=anchura;
