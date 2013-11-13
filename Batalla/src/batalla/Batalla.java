@@ -47,7 +47,7 @@ public class Batalla {
         
         //crear flota ordenador
         Ordenador ordenador=new Ordenador();
-        //ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
+        ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
         /*
         flotaOrdenador=new ArrayList();
         flotaOrdenador=ordenador.getPosicionesOcupadasFlota();

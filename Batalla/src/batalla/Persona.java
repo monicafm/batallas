@@ -24,7 +24,12 @@ public class Persona extends Participante{
     private ArrayList<Coordenada> posicionesOcupadasFlota;
     private ArrayList<Coordenada> posicionesPerimetralesFlota;
     private Coordenada disparoPersona;
+    
     private ArrayList<Coordenada> aSubPersona;
+    private ArrayList<Coordenada> aFraPersona;
+    private ArrayList<Coordenada> aAcoPersona;
+    private ArrayList<Coordenada> aPortaPersona;
+    
     private ArrayList<Barco> flota;
     
     @Override
@@ -35,6 +40,9 @@ public class Persona extends Participante{
         posicionesPerimetralesFlota= new ArrayList<Coordenada>();
         
         aSubPersona=new ArrayList<Coordenada>();
+        aFraPersona=new ArrayList<Coordenada>();
+        aAcoPersona=new ArrayList<Coordenada>();
+        aPortaPersona=new ArrayList<Coordenada>();
         
         tableroBarcosPersona= new Tablero();
         tableroBarcosPersona.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
@@ -49,6 +57,10 @@ public class Persona extends Participante{
         //posicionesOcupadasFlota=null;
         //posicionesPerimetralesFlota=null;
         aSubPersona=null;
+        aFraPersona=null;
+        aAcoPersona=null;
+        aPortaPersona=null;
+        boolean resultado=false;
         
         
         System.out.println();
@@ -66,8 +78,10 @@ public class Persona extends Participante{
                 submarinoPersona2= new Submarino();             
                 aSubPersona=submarinoPersona2.getPosicionesBarco(coordPersona,orientacion);
                 
-            }while (submarinoPersona2.comprobarBarco(aSubPersona, posicionesOcupadasFlota, posicionesPerimetralesFlota)==true);
-            System.out.print("aquí");
+                resultado=submarinoPersona2.comprobarBarco(aSubPersona, posicionesOcupadasFlota, posicionesPerimetralesFlota);
+                if (resultado){System.out.println("Hay posiciones ya ocupadas por un barco o en su perímetro. Piense en otra localización...");}
+            
+            }while (resultado);
             
             
             //colocar barco en el tablero 
@@ -83,76 +97,113 @@ public class Persona extends Participante{
 
                
         //SOLICITAR FRAGATAS
-        System.out.println();
+        
         for (int i=0;i<GlobalConstants.NUMERO_FRAGATAS;i++){
-            do{      
-            System.out.println("FRAGATA "+(i+1));
-                do{
-                    coordPersona=new Coordenada();
-                    coordPersona.Coordenada();               
-                    orientacionPersona=new Orientacion();
-                    orientacionPersona.Orientacion();
-                    fragataPersona1= new Fragata();
-                }while (fragataPersona1.cabidaTablero(coordPersona, orientacionPersona.getOrientacion(),GlobalConstants.TAMANO_FRAGATA)==true);
-            }while (fragataPersona1.comprobarBarco(fragataPersona1.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()), posicionesOcupadasFlota, posicionesPerimetralesFlota)==true);
+            do{
+                System.out.println();
+                System.out.println("FRAGATA "+(i+1));
+                
+                orientacion=pedirOrientacion();
+                coordPersona= coordenadaValida(orientacion,GlobalConstants.TAMANO_FRAGATA);
+                
+                fragataPersona1= new Fragata();             
+                aFraPersona=fragataPersona1.getPosicionesBarco(coordPersona,orientacion);
+                
+                resultado=fragataPersona1.comprobarBarco(aFraPersona, posicionesOcupadasFlota, posicionesPerimetralesFlota);
+                if (resultado){System.out.println("Hay posiciones ya ocupadas por un barco o en su perímetro. Piense en otra localización...");}
+            
+            }while (resultado);
+            
+            
+            //colocar barco en el tablero 
             tableroBarcosPersona.colocarBarcoEnTablero(fragataPersona1.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA);
-            tableroBarcosPersona.imprimirTableroBarcos();
-            for (int j=0;j<fragataPersona1.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()).size();j++){
-                posicionesOcupadasFlota.add(fragataPersona1.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<fragataPersona1.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlota.add(fragataPersona1.posicionesPerimetralesBarco.get(k));
-            }
-        } 
+            tableroBarcosPersona.imprimirTableroBarcos();    
+            
+            flota=getFlota(fragataPersona1);
+            posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aFraPersona);
+            posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(fragataPersona1);
+        
+        }
                        
         //SOLICITAR ACORAZADOS
-        System.out.println();
+        
         for (int i=0;i<GlobalConstants.NUMERO_ACORAZADOS;i++){
-            do{      
+            do{
+                System.out.println();
                 System.out.println("ACORAZADO "+(i+1));
-                do{
-                    coordPersona=new Coordenada();
-                    coordPersona.Coordenada();               
-                    orientacionPersona=new Orientacion();
-                    orientacionPersona.Orientacion();
-                    acorazadoPersona1= new Acorazado();
-                }while (acorazadoPersona1.cabidaTablero(coordPersona, orientacionPersona.getOrientacion(),GlobalConstants.TAMANO_ACORAZADO)==true);
-            }while (acorazadoPersona1.comprobarBarco(acorazadoPersona1.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()), posicionesOcupadasFlota, posicionesPerimetralesFlota)==true);
+                
+                orientacion=pedirOrientacion();
+                coordPersona= coordenadaValida(orientacion,GlobalConstants.TAMANO_ACORAZADO);
+                
+                acorazadoPersona1= new Acorazado();            
+                aAcoPersona=acorazadoPersona1.getPosicionesBarco(coordPersona,orientacion);
+                
+                resultado=acorazadoPersona1.comprobarBarco(aAcoPersona, posicionesOcupadasFlota, posicionesPerimetralesFlota);
+                if (resultado){System.out.println("Hay posiciones ya ocupadas por un barco o en su perímetro. Piense en otra localización...");}
+            
+            }while (resultado);
+            
+            
+            //colocar barco en el tablero 
             tableroBarcosPersona.colocarBarcoEnTablero(acorazadoPersona1.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);
-            tableroBarcosPersona.imprimirTableroBarcos();
-            for (int j=0;j<acorazadoPersona1.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()).size();j++){
-                posicionesOcupadasFlota.add(acorazadoPersona1.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<acorazadoPersona1.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlota.add(acorazadoPersona1.posicionesPerimetralesBarco.get(k));
-            }
+            tableroBarcosPersona.imprimirTableroBarcos();    
+            
+            flota=getFlota(acorazadoPersona1);
+            posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aAcoPersona);
+            posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(acorazadoPersona1);
+        
         }
                
         //PORTAAVIONES
-        System.out.println();
+        
         for (int i=0;i<GlobalConstants.NUMERO_PORTAAVIONES;i++){
-            do{      
+            do{
+                System.out.println();
                 System.out.println("PORTAAVIONES "+(i+1));
-                do{            
-                    coordPersona=new Coordenada();
-                    coordPersona.Coordenada();               
-                    orientacionPersona=new Orientacion();
-                    orientacionPersona.Orientacion();
-                    portaavionesPersona= new Portaaviones();
-                }while (portaavionesPersona.cabidaTablero(coordPersona, orientacionPersona.getOrientacion(),GlobalConstants.TAMANO_PORTAAVIONES)==true);
-            }while (portaavionesPersona.comprobarBarco(portaavionesPersona.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()), posicionesOcupadasFlota, posicionesPerimetralesFlota)==true);
+                
+                orientacion=pedirOrientacion();
+                coordPersona= coordenadaValida(orientacion,GlobalConstants.TAMANO_PORTAAVIONES);
+                
+                portaavionesPersona= new Portaaviones();           
+                aPortaPersona=portaavionesPersona.getPosicionesBarco(coordPersona,orientacion);
+                
+                resultado=portaavionesPersona.comprobarBarco(aPortaPersona, posicionesOcupadasFlota, posicionesPerimetralesFlota);
+                if (resultado){System.out.println("Hay posiciones ya ocupadas por un barco o en su perímetro. Piense en otra localización...");}
+            
+            }while (resultado);
+            
+            
+            //colocar barco en el tablero 
             tableroBarcosPersona.colocarBarcoEnTablero(portaavionesPersona.getBarcoConstruido(),GlobalConstants.TAMANO_PORTAAVIONES);
-            tableroBarcosPersona.imprimirTableroBarcos();
-            for (int j=0;j<portaavionesPersona.getPosicionesBarco(coordPersona,orientacionPersona.getOrientacion()).size();j++){
-                posicionesOcupadasFlota.add(portaavionesPersona.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<portaavionesPersona.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlota.add(portaavionesPersona.posicionesPerimetralesBarco.get(k));
-            }
-        }       
+            tableroBarcosPersona.imprimirTableroBarcos();    
+            
+            flota=getFlota(portaavionesPersona);
+            posicionesOcupadasFlota= getPosicionesOcupadasFlota2(aPortaPersona);
+            posicionesPerimetralesFlota= getPosicionesPerimetralesFlota2(portaavionesPersona);
+        
+        }
+        
+
+        Iterator<Coordenada> itera=posicionesOcupadasFlota.iterator();
+        System.out.println();
+        System.out.print("***posiciones ocupadas por barcos de la Flota: ");
+        while(itera.hasNext()){
+            Object recorrerCoor =itera.next();
+            Coordenada recor= (Coordenada) recorrerCoor;
+            System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
+        }          
+        Iterator<Coordenada> iter=posicionesPerimetralesFlota.iterator();
+        System.out.println();
+        System.out.print("***posiciones perimetrales de la Flota: ");
+        while(iter.hasNext()){
+            Object recorrerCoor =iter.next();
+            Coordenada recor= (Coordenada) recorrerCoor;
+            System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
+        }
+        
        
     }
-    
+    /*
     public ArrayList<Barco> getFlota(Barco ba){
     	 ArrayList<Barco> flotilla= new ArrayList<Barco>();
     	 
@@ -160,37 +211,16 @@ public class Persona extends Participante{
     	
     	return flotilla;
     }
+    */
 
-    public ArrayList<Coordenada> getPosicionesOcupadasFlota2(ArrayList<Coordenada> al){
-    	for (int j=0;j<al.size();j++){
-            posicionesOcupadasFlota.add(al.get(j));
-    	}
-        return posicionesOcupadasFlota; 
-    }
-    public ArrayList<Coordenada> getPosicionesOcupadasFlota(){
-        return posicionesOcupadasFlota;
-    }
-    
-    public ArrayList<Coordenada> getPosicionesPerimetralesFlota2(Barco ba){	
-    	
-    	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
-            posicionesPerimetralesFlota.add(ba.posicionesPerimetralesBarco.get(k));
-        }
-    	
-        return posicionesPerimetralesFlota; 
-    }
-    
-    
-    public ArrayList<Coordenada> getPosicionesPerimetralesFlota(){	
-        return posicionesPerimetralesFlota; 
-    }
+
     public void mostrarTableroBarcosFlota(){
     	tableroBarcosPersona.imprimirTableroBarcos();
     }
     
     public void imprimirPosicionesOcupadasTablero(){
         
-        Iterator itera=posicionesOcupadasFlota.iterator();
+        Iterator<Coordenada> itera=posicionesOcupadasFlota.iterator();
         System.out.println();
         System.out.print("***posiciones ocupadas por barcos de la Flota: ");
         while(itera.hasNext()){
@@ -199,7 +229,7 @@ public class Persona extends Participante{
             System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
         }
         
-        Iterator iter=posicionesPerimetralesFlota.iterator();
+        Iterator<Coordenada> iter=posicionesPerimetralesFlota.iterator();
         System.out.println();
         System.out.print("***posiciones perimetrales de la Flota: ");
         while(iter.hasNext()){
@@ -248,7 +278,6 @@ public class Persona extends Participante{
         		//tiene que ser en minúscula
             	x=coordenada.getCoordenadaX();            	
             	y=coordenada.getCoordenadaY();
-            	System.out.println("x e y: "+x+","+y);
             		
                 if (x<0){ restriccion= true;}
                 if (x>GlobalConstants.ALTO_MAX_TABLERO-1){restriccion= true;}
@@ -328,6 +357,23 @@ public class Persona extends Participante{
         return true;
     }
     
+    public ArrayList<Coordenada> getPosicionesOcupadasFlota2(ArrayList<Coordenada> al){    	
+    	for (int j=0;j<al.size();j++){
+    		posicionesOcupadasFlota.add(al.get(j));
+    	}
+        return posicionesOcupadasFlota; 
+    }
+    
+    public ArrayList<Coordenada> getPosicionesPerimetralesFlota2(Barco ba){    	
+    	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
+    		posicionesPerimetralesFlota.add(ba.posicionesPerimetralesBarco.get(k));
+        }    	
+        return posicionesPerimetralesFlota; 
+    }
+    
+    /*
+     * me falta un método que me permita ver que hay algo dentro de flota... iterar...
+     */
     
 }
 

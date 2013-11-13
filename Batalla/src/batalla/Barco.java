@@ -49,8 +49,10 @@ public abstract class Barco {
         }        
         return resultado;
     }
-    public boolean comprobarBarco(ArrayList<Coordenada> arrayBarco,ArrayList<Coordenada> arrayFlota,ArrayList<Coordenada> arrayPerimetro){
-        boolean resultado= false;// falso= no hay coordenadas coincidentes
+    
+     public boolean comprobarBarco(ArrayList<Coordenada> arrayBarco,ArrayList<Coordenada> arrayFlota,ArrayList<Coordenada> arrayPerimetro){
+        
+    	boolean resultado= false;// falso= no hay coordenadas coincidentes
         for(Coordenada co: arrayBarco){
             //el barco no ocupa una posicione de otro barco
             for (Coordenada coo: arrayFlota){
@@ -59,8 +61,7 @@ public abstract class Barco {
                              resultado=true;
                         }
                 }
-            }
-            
+            }           
             //el barco no ocupa el perímetro de otro barco
             for (Coordenada coor: arrayPerimetro){
                     if(co.getCoordenadaX()==coor.getCoordenadaX()){
@@ -70,9 +71,11 @@ public abstract class Barco {
                 }
             }
         }
+        /*
         if (resultado==true){
         	System.out.println("Hay posiciones que ya están ocupadas por un barco o en su perímetro. Piense en otra localización...");
         }
+        */
         return resultado;
     }
     public Coordenada[] getPosicionesBarco2(Coordenada c,String o){ //si

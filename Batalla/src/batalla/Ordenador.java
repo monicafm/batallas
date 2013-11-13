@@ -4,6 +4,7 @@
  */
 package batalla;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /**
@@ -13,7 +14,7 @@ import java.util.Scanner;
 public class Ordenador extends Participante{
     
     private Coordenada coordOrdenador;
-    private Orientacion orientacionOrdenador;
+    //private Orientacion orientacionOrdenador;
     private Barco submarinoOrdenador;
     private Barco fragataOrdenador;
     private Barco acorazadoOrdenador;
@@ -21,6 +22,12 @@ public class Ordenador extends Participante{
     
     private Tablero tableroBarcosOrdenador;
     
+	private ArrayList<Coordenada> aSubOrdenador=new ArrayList<Coordenada>();
+	private ArrayList<Coordenada> aFraOrdenador=new ArrayList<Coordenada>();
+	private ArrayList<Coordenada> aAcoOrdenador=new ArrayList<Coordenada>();
+	private ArrayList<Coordenada> aPortaOrdenador=new ArrayList<Coordenada>();
+    
+    private ArrayList<Barco> flotaOrdenador;
     private ArrayList<Coordenada> posicionesOcupadasFlotaOrdenador;
     private ArrayList<Coordenada> posicionesPerimetralesFlotaOrdenador;
     
@@ -30,111 +37,130 @@ public class Ordenador extends Participante{
     
     @Override
     public void posicionarFlota() {
+    	
     	String orientacionAleatoria="";
-        posicionesOcupadasFlotaOrdenador= new ArrayList();
-        posicionesPerimetralesFlotaOrdenador= new ArrayList();
+        coordOrdenador=null;
         
+        aSubOrdenador=null;
+        aFraOrdenador=null;
+        aAcoOrdenador=null;
+        aPortaOrdenador=null;
+    	
         tableroBarcosOrdenador= new Tablero();
         tableroBarcosOrdenador.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
         
-       
+    	flotaOrdenador=new ArrayList<Barco>();
+        posicionesOcupadasFlotaOrdenador= new ArrayList<Coordenada>();
+        posicionesPerimetralesFlotaOrdenador= new ArrayList<Coordenada>();
+        
+    
         //SUBMARINO ORDENADOR
-        System.out.println();
-        System.out.println("el ordenador posiciona su flota...");
         for (int i=0;i<GlobalConstants.NUMERO_SUBMARINOS;i++){
-            do{      
-                do{
-                	
-                    coordOrdenador=new Coordenada();
-                    coordOrdenador.coordenadaAleatoria();
-                    
-                    orientacionAleatoria= pedirOrientacionAleatoria();
-                    
-                    submarinoOrdenador= new Submarino();
-                }while (submarinoOrdenador.cabidaTablero(coordOrdenador, orientacionAleatoria,GlobalConstants.TAMANO_SUBMARINO)==true);
-            }while (submarinoOrdenador.comprobarBarco(submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
+            do{
+            	
+                orientacionAleatoria=pedirOrientacionAleatoria();
+                coordOrdenador= coordenadaValidaAleatoria(orientacionAleatoria,GlobalConstants.TAMANO_SUBMARINO);
+                
+                submarinoOrdenador= new Submarino();             
+                aSubOrdenador=submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria);
+                
+            }while (submarinoOrdenador.comprobarBarco(aSubOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
+                      
+            //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(submarinoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_SUBMARINO);
-            //tableroBarcosOrdenador.imprimirTableroBarcos();
-            for (int j=0;j<submarinoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria).size();j++){
-                posicionesOcupadasFlotaOrdenador.add(submarinoOrdenador.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<submarinoOrdenador.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlotaOrdenador.add(submarinoOrdenador.posicionesPerimetralesBarco.get(k));
-            }
-        } 
+            
+            flotaOrdenador=getFlota(submarinoOrdenador);
+            posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aSubOrdenador);
+            posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(submarinoOrdenador);            
+        }
         
-        //FRAGATA ORDENADOR
-        System.out.println();
+      //FRAGATA ORDENADOR   
         for (int i=0;i<GlobalConstants.NUMERO_FRAGATAS;i++){
-            do{      
-                do{
-                    coordOrdenador=new Coordenada();
-                    coordOrdenador.coordenadaAleatoria();;               
-                    orientacionOrdenador=new Orientacion();
-                    orientacionOrdenador.OrientacionAleatoria();
-                    fragataOrdenador= new Fragata();
-                }while (fragataOrdenador.cabidaTablero(coordOrdenador, orientacionOrdenador.getOrientacion(),GlobalConstants.TAMANO_FRAGATA)==true);
-            }while (fragataOrdenador.comprobarBarco(fragataOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
-            tableroBarcosOrdenador.colocarBarcoEnTablero(fragataOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA);
-            //tableroBarcosOrdenador.imprimirTableroBarcos();
-            for (int j=0;j<fragataOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()).size();j++){
-                posicionesOcupadasFlotaOrdenador.add(fragataOrdenador.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<fragataOrdenador.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlotaOrdenador.add(fragataOrdenador.posicionesPerimetralesBarco.get(k));
-            }
-        } 
+            do{
+                orientacionAleatoria=pedirOrientacionAleatoria();
+                coordOrdenador= coordenadaValidaAleatoria(orientacionAleatoria,GlobalConstants.TAMANO_FRAGATA);
+                
+                fragataOrdenador= new Fragata();           
+                aFraOrdenador=fragataOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria);
+                
+            }while (fragataOrdenador.comprobarBarco(aFraOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
+                        
+            //colocar barco en el tablero 
+            tableroBarcosOrdenador.colocarBarcoEnTablero(fragataOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA); 
+            
+            flotaOrdenador=getFlota(fragataOrdenador);
+            posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aFraOrdenador);
+            posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(fragataOrdenador);
         
+        }
+                
         //ACORAZADO ORDENADOR
-        System.out.println();
         for (int i=0;i<GlobalConstants.NUMERO_ACORAZADOS;i++){
-            do{      
-                do{
-                    coordOrdenador=new Coordenada();
-                    coordOrdenador.coordenadaAleatoria();;               
-                    orientacionOrdenador=new Orientacion();
-                    orientacionOrdenador.OrientacionAleatoria();
-                    acorazadoOrdenador= new Acorazado();
-                }while (acorazadoOrdenador.cabidaTablero(coordOrdenador, orientacionOrdenador.getOrientacion(),GlobalConstants.TAMANO_ACORAZADO)==true);
-            }while (acorazadoOrdenador.comprobarBarco(acorazadoOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
-            tableroBarcosOrdenador.colocarBarcoEnTablero(acorazadoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);
-            //tableroBarcosOrdenador.imprimirTableroBarcos();
-            for (int j=0;j<acorazadoOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()).size();j++){
-                posicionesOcupadasFlotaOrdenador.add(acorazadoOrdenador.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<acorazadoOrdenador.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlotaOrdenador.add(acorazadoOrdenador.posicionesPerimetralesBarco.get(k));
-            }
-        } 
+            do{               
+                orientacionAleatoria=pedirOrientacionAleatoria();
+                coordOrdenador= coordenadaValidaAleatoria(orientacionAleatoria,GlobalConstants.TAMANO_ACORAZADO);
+                
+                acorazadoOrdenador= new Acorazado();          
+                aAcoOrdenador=acorazadoOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria);
+                
+            }while (acorazadoOrdenador.comprobarBarco(aAcoOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
+                        
+            //colocar barco en el tablero 
+            tableroBarcosOrdenador.colocarBarcoEnTablero(acorazadoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);  
+            
+            flotaOrdenador=getFlota(acorazadoOrdenador);
+            posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aAcoOrdenador);
+            posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(acorazadoOrdenador);
+           
+        }
         
+
         //PORTAAVIONES ORDENADOR
-        System.out.println();
         for (int i=0;i<GlobalConstants.NUMERO_PORTAAVIONES;i++){
-            do{      
-                do{
-                    coordOrdenador=new Coordenada();
-                    coordOrdenador.coordenadaAleatoria();;               
-                    orientacionOrdenador=new Orientacion();
-                    orientacionOrdenador.OrientacionAleatoria();
-                    portaavionesOrdenador= new Portaaviones();
-                }while (portaavionesOrdenador.cabidaTablero(coordOrdenador, orientacionOrdenador.getOrientacion(),GlobalConstants.TAMANO_PORTAAVIONES)==true);
-            }while (portaavionesOrdenador.comprobarBarco(portaavionesOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()), posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador)==true);
+            do{
+                //System.out.println();
+                //System.out.println("ACORAZADO "+(i+1));
+                
+                orientacionAleatoria=pedirOrientacionAleatoria();
+                coordOrdenador= coordenadaValidaAleatoria(orientacionAleatoria,GlobalConstants.TAMANO_PORTAAVIONES);
+                
+                portaavionesOrdenador= new Portaaviones();         
+                aPortaOrdenador=portaavionesOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria);
+                
+            }while (portaavionesOrdenador.comprobarBarco(aPortaOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
+            
+            
+            //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(portaavionesOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_PORTAAVIONES);
-            System.out.println("   Tablero de barcos del Ordenador:");
-            tableroBarcosOrdenador.imprimirTableroBarcos();//este tablero no debe visualizarse. es para comprobar
-            for (int j=0;j<portaavionesOrdenador.getPosicionesBarco(coordOrdenador,orientacionOrdenador.getOrientacion()).size();j++){
-                posicionesOcupadasFlotaOrdenador.add(portaavionesOrdenador.posicionesOcupadasBarco.get(j));
-            }
-            for (int k=0;k<portaavionesOrdenador.getPosicionesPerimetroBarco().size();k++){
-                posicionesPerimetralesFlotaOrdenador.add(portaavionesOrdenador.posicionesPerimetralesBarco.get(k));
-            }
-        } 
+            //PRUEBA-ELIMINAR
+            tableroBarcosOrdenador.imprimirTableroBarcos();  
+            //FIN PRUEBA-ELIMINAR
+            
+            flotaOrdenador=getFlota(portaavionesOrdenador);
+            posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aPortaOrdenador);
+            posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(portaavionesOrdenador);
         
-       
-        //throw new UnsupportedOperationException("Not supported yet.");
-    }
-    public ArrayList<Coordenada> getPosicionesOcupadasFlota(){
-        return posicionesOcupadasFlotaOrdenador;
+            //PRUEBA-ELIMINAR
+            Iterator<Coordenada> itera=posicionesOcupadasFlotaOrdenador.iterator();
+            System.out.println();
+            System.out.print("***posiciones ocupadas por barcos de la Flota: ");
+            while(itera.hasNext()){
+                Object recorrerCoor =itera.next();
+                Coordenada recor= (Coordenada) recorrerCoor;
+                System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
+            }            
+            Iterator<Coordenada> iter=posicionesPerimetralesFlotaOrdenador.iterator();
+            System.out.println();
+            System.out.print("***posiciones perimetrales de la Flota: ");
+            while(iter.hasNext()){
+                Object recorrerCoor =iter.next();
+                Coordenada recor= (Coordenada) recorrerCoor;
+                System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
+            }
+            //FIN PRUEBA-ELIMINAR          
+            
+        }
+        
     }
     
     public Coordenada crearDisparoAleatorio(){
@@ -211,6 +237,29 @@ public class Ordenador extends Participante{
 		}
     	
     }
+    
+    public Coordenada coordenadaValidaAleatoria(String o,int tamano){//teniendo la orientacion y el tamaño del barco pide una coordenada hasta que sea válida
+    	
+        Coordenada coordOrdenador=new Coordenada();
+        boolean resultado=false;
+        
+        do{
+	        //solicitar coordenada	
+	        coordOrdenador.coordenadaAleatoria();
+	        
+	        resultado=false;
+	        if(o.equalsIgnoreCase("h")){//si el barco es horizontal crece sobre las las columnas       
+	            if (coordOrdenador.getCoordenadaY()+tamano>GlobalConstants.ANCHO_MAX_TABLERO){
+	                resultado=true;//true el barco sale del tablero
+	            }    
+	        } else{
+	            if(coordOrdenador.getCoordenadaX()+tamano>GlobalConstants.ALTO_MAX_TABLERO){
+	                resultado=true;
+	            }    
+	        }
+        }while(resultado==true);
+        return coordOrdenador;
+    }
     public String pedirOrientacionAleatoria(){
     	String orientacionAleatoria="";
     	
@@ -226,5 +275,20 @@ public class Ordenador extends Participante{
     	
     	return orientacionAleatoria;
     }
+    
+    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(ArrayList<Coordenada> al){
+    	for (int j=0;j<al.size();j++){
+    		posicionesOcupadasFlotaOrdenador.add(al.get(j));
+    	}
+        return posicionesOcupadasFlotaOrdenador; 
+    }
+    
+    public ArrayList<Coordenada> getPosicionesPerimetralesFlotaOrdenador(Barco ba){
+    	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
+    		posicionesPerimetralesFlotaOrdenador.add(ba.posicionesPerimetralesBarco.get(k));
+        }   	
+        return posicionesPerimetralesFlotaOrdenador; 
+    }
+    
 }
 
