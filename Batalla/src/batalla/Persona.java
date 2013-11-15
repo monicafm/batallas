@@ -221,6 +221,8 @@ public class Persona extends Participante{
 
 
     public void mostrarTableroBarcosFlota(){
+    	System.out.println();
+    	System.out.print("Comprueba el disparo. Este es su...");
     	tableroBarcosPersona.imprimirTableroBarcos();
     }
     
@@ -377,6 +379,10 @@ public class Persona extends Participante{
     	for (int j=0;j<al.size();j++){
     		posicionesOcupadasFlota.add(al.get(j));
     	}
+        return posicionesOcupadasFlota; 
+    }
+    
+    public ArrayList<Coordenada> getPosicionesOcupadasFlota(){    	
         return posicionesOcupadasFlota; 
     }
     

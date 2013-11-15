@@ -53,7 +53,7 @@ abstract class Participante {
       }
   
 
-    public boolean aciertaEnCoordenadaContraria(Coordenada coorde,ArrayList<Coordenada> flota) {
+    public boolean aciertaEnCoordenadaContraria(Coordenada coorde,ArrayList<Coordenada> flota) {//este método debería devolver tocado, hundido o agua para poder comprobar con la respuesta de persona 
         boolean resultadoDisparo=false;
         
         for (Coordenada coor: flota){
@@ -104,6 +104,8 @@ abstract class Participante {
     	}
     	
     	for (Coordenada[] fl: flota){//para cada barco de la flota
+    		
+    		
     		    		   		
     		for (int i=0; i<fl.length;i++){  			
     			if(fl[i].getCoordenadaX()==100 && fl[i].getCoordenadaY()==100){

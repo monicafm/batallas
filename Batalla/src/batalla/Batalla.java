@@ -43,11 +43,11 @@ public class Batalla {
         
         //crear flota persona
         Persona persona=new Persona();
-        //persona.posicionarFlota();
+        persona.posicionarFlota();
         
         
-        //flotaPersona= new ArrayList();
-        //flotaPersona=persona.getPosicionesOcupadasFlota();
+        flotaPersona= new ArrayList<Coordenada>();
+        flotaPersona=persona.getPosicionesOcupadasFlota();
         
         
         //crear flota ordenador
@@ -56,12 +56,13 @@ public class Batalla {
        
         flotaOrdenador=new ArrayList<Coordenada>();
         flotaOrdenador=ordenador.getPosicionesOcupadasFlotaOrdenador();
+        
         flotaOrd=new ArrayList<Barco>();
         flotaOrd= ordenador.getFlota();
         flotaO=new ArrayList<Coordenada[]>();
         flotaO= ordenador.getFlotaO();
         
-        
+        String respuesta="";
         //disparos - tablero persona
         
         
@@ -91,8 +92,7 @@ public class Batalla {
          * 
          * 
          */
-        //tableroDisparoPersona.imprimirTableroDisparos();//se muestra el tablero de disparos
-        
+        //tableroDisparoPersona.imprimirTableroDisparos();//se muestra el tablero de disparos      
        
         //persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
         //persona.esTocado(disPersona,flotaOrd);//??
@@ -102,16 +102,34 @@ public class Batalla {
         tableroDisparoPersona.imprimirTableroDisparos();
         persona.marcarTocados(disPersona,flotaO);//las coordenadas acertadas se cambian a 100 
         }
-       
-        
-        
+           
         
         //disparo Ordenador
         disOrdenador=ordenador.disparar(conjuntoDisparosOrdenador);
         conjuntoDisparosOrdenador=ordenador.añadirDisparo(disOrdenador,conjuntoDisparosOrdenador);
+        persona.mostrarTableroBarcosFlota();
+        respuesta=ordenador.solicitarResultadoDisparo();
+        System.out.println("esta es la respuesta: "+respuesta);
+        
+        
+        /*
+         * método que recoja la respuesta de persona y la del método acierta y las compruebe..
+         */
+        
+        acierto=ordenador.aciertaEnCoordenadaContraria(disOrdenador, flotaPersona);
+        
         //es disparo certero? dispara el ordenador contra la flota de la persona
         
-        
+        /*
+         * el disparo del ordenador:
+         * -se elige coordenada aleatoria y se comprueba que no fue usada antes
+         * -se comprueba la coordenada aleatoria válida contra la flotaPersona:
+         * --se pide a la persona que conteste (tenemos que mostrarle antes el tablero de barcos persona)
+         * --comprobamos que la contestación es correcta
+         * -anotamos dicha contestación sobre el tablero de barcos persona
+         * -si es tocado o hundido se repite el disparo del ordenador
+         * -si es tocado el disparo tiene que ser un disparo listo / si es hundido es disparo aleatorio
+         */
         
 /*
        //DISPARO PERSONA
@@ -175,19 +193,7 @@ public class Batalla {
         
     }
     
-    
-    
-    public void añadirDisparo(Coordenada d){
-    
-    	}
-    
-    //public void comprobarDisparo(
-    
-    
-     
-    
-    public void anotarDisparo(Coordenada c,Tablero t) {
-    }
+
     
     
 }

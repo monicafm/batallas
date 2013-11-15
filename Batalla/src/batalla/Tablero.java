@@ -13,7 +13,7 @@ public class Tablero {
     private int ancho;
     private char [][] tablabarcos;
     private enum estadoCasilla{
-        AGUA, DISP, TOCA, HUND
+        a, x, T, H
     };
     private estadoCasilla [][] tabladisparos;
     private int tamano;
@@ -33,7 +33,7 @@ public class Tablero {
         }
        for (int i=0; i<alto; i++){
             for (int j=0; j<ancho; j++){
-                tabladisparos[i][j]=estadoCasilla.AGUA;
+                tabladisparos[i][j]=estadoCasilla.a;
             }
         }
    }
@@ -48,9 +48,9 @@ public class Tablero {
     public void anotarDisparoEnTablero(Coordenada c,boolean b){
     	
     	if (b==true){   	
-    		tabladisparos[c.getCoordenadaX()][c.getCoordenadaY()]=estadoCasilla.TOCA;
+    		tabladisparos[c.getCoordenadaX()][c.getCoordenadaY()]=estadoCasilla.T;
     	} else {
-    		tabladisparos[c.getCoordenadaX()][c.getCoordenadaY()]=estadoCasilla.DISP;
+    		tabladisparos[c.getCoordenadaX()][c.getCoordenadaY()]=estadoCasilla.x;
     	}
     }
     public void anotarDisparoOrdenadorEnTableroBarcos(){
@@ -78,10 +78,12 @@ public class Tablero {
     }*/
     
     public void imprimirTableroBarcos(){
-        System.out.println("\n");
         System.out.println("    Tablero de barcos:\n");
+        System.out.println("     1  2  3  4  5  6  7  8  9 10\n");//esto es un apaño para mostrar índices de columnas
         for (int i=0; i<alto; i++){
-            for (int j=0; j<ancho; j++){
+        	if(i<9){System.out.print(" "+(i+1)+"   ");}//esto es un apaño
+        	else{System.out.print((i+1)+"   ");}//esto es un apaño       	
+            for (int j=0; j<ancho; j++){            	
                 System.out.print(tablabarcos[i][j]);
                 if (j!=tablabarcos[i].length-1)System.out.print("  ");
             }
@@ -90,8 +92,12 @@ public class Tablero {
         System.out.println();
     }
     public void imprimirTableroDisparos(){
-        System.out.println("Tablero de disparos\n");
+        System.out.println("    Tablero de disparos\n");
+        //System.out.println("     1     2     3     4     5     6     7     8     9     10\n");//esto es un apaño
+        System.out.println("     1  2  3  4  5  6  7  8  9 10\n");//esto es un apaño
         for (int i=0; i<alto; i++){
+        	if(i<9){System.out.print(" "+(i+1)+"   ");}//esto es un apaño
+        	else{System.out.print((i+1)+"   ");} //esto es un apaño 
             for (int j=0; j<ancho; j++){
                 System.out.print(tabladisparos[i][j]);
                 if (j!=tabladisparos[i].length-1)System.out.print("  ");

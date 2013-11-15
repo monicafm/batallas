@@ -188,7 +188,7 @@ public class Ordenador extends Participante{
         y=c.getCoordenadaY();
         //System.out.println("antes: ("+x+","+y+")");
 
-        System.out.print("("+(x+1)+","+(y+1)+")");
+        System.out.print("mostrar ("+(x+1)+","+(y+1)+")");
     }
     
     public void crearDisparoListo(Coordenada c){
@@ -223,10 +223,10 @@ public class Ordenador extends Participante{
     public ArrayList<Coordenada> getDisparoListo(){
     	return disparoListo;
     }
-    public void solicitarResultadoDisparo(){
-
-        while (true){
-        System.out.println("¿agua (A), tocado(T), hundido(H)?. Introduzca A, T o H.");
+    public String solicitarResultadoDisparo(){
+    
+        while (true) {
+        System.out.println("¿agua (A), tocado (T), hundido (H)?");
         
         Scanner tecleo= new Scanner(System.in);	        
         resultadoDisparoOrdenador=tecleo.next();
@@ -235,7 +235,7 @@ public class Ordenador extends Participante{
 	        	System.out.println("agua");
 	        	break;
 	        }
-	        if (resultadoDisparoOrdenador.equalsIgnoreCase("T")){
+	        if (resultadoDisparoOrdenador.equalsIgnoreCase("T")){	        	
 	        	System.out.println("tocado");
 	        	break;
 	        } 
@@ -243,8 +243,8 @@ public class Ordenador extends Participante{
 	        	System.out.println("hundido");
 	        	break;
 	        }
-		}
-    	
+	        }
+    	return resultadoDisparoOrdenador;
     }
     
     public Coordenada coordenadaValidaAleatoria(String o,int tamano){//teniendo la orientacion y el tamaño del barco pide una coordenada hasta que sea válida
@@ -293,6 +293,9 @@ public class Ordenador extends Participante{
         return posicionesOcupadasFlotaOrdenador; 
     }
     
+    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(){
+    	return posicionesOcupadasFlotaOrdenador; 
+    }
     
     public ArrayList<Coordenada[]> getFlotaO(){
       	return flotaO;
@@ -304,9 +307,7 @@ public class Ordenador extends Participante{
       	return flotaO;
     }
     
-    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(){
-    	return posicionesOcupadasFlotaOrdenador; 
-    }
+
     
     public ArrayList<Coordenada> getPosicionesPerimetralesFlotaOrdenador(Barco ba){
     	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
@@ -320,8 +321,9 @@ public class Ordenador extends Participante{
     	boolean resultado= false;
     	     	
     	do{
-    		System.out.print("Piense en su disparo... ");
-        	disparo.coordenadaAleatoria();    	
+    		System.out.print("El disparo del ordenador es: ");
+        	disparo.coordenadaAleatoria();
+        	mostrarDisparoAleatorio(disparo);
         	resultado=comprobarConjuntoDisparos(disparo, conjuntoDisparos);
     	}while(resultado);
     	
