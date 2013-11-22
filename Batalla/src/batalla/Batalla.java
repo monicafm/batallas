@@ -1,200 +1,279 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package batalla;
 import batalla.Coordenada;
 
-import java.util.Iterator;
-import java.util.Scanner;
-import java.lang.*;
+import java.util.List;
 import java.util.ArrayList;
 
-/**
- *
- * @author monica
- */
 public class Batalla {
-    
-    /**
-     * @param args the command line arguments
-     */
-	
-    
-    public static void main(String[] args) {
-
-        // TODO code application logic here
-        
+    	
+    public static void main (String[] args) {    	
+    	
+    	System.out.println();
+    	System.out.println("	Bienvenido al juego ***Hundir la flota***\n");
+    	System.out.println();
+    	System.out.println("La flota consta de 7 barcos y jugamos en un tablero de "+GlobalConstants.ALTO_MAX_TABLERO+"x"+GlobalConstants.ANCHO_MAX_TABLERO+".");
+    	System.out.println("Para cada barco se solicita la orientacion y la primera coordenada.");
+    	System.out.println("Se autocompletan hacia la derecha y hacia abajo.");
+    	System.out.println("Tiene: ");
+    	System.out.println("	- 2 Submarinos con 2 coordenadas");
+    	System.out.println("	- 2 Fragatas con 3 coordenadas");
+    	System.out.println("	- 2 Acorazados con 4 coordenadas");
+    	System.out.println("	- 1 Portaaviones con 5 coordenadas");
+    	
+    	boolean acierto;
+        boolean esHundido;
+        boolean resultado;
+            	
+//PERSONA  *******************************************  	
+  		//flota
+        List<Coordenada> flotaPersona;
+        List<Coordenada[]> flotaP;
+        //tablero
+        Tablero tableroDisparoPersona;       
+        List<Coordenada> conjuntoDisparosPersona;    
+        boolean devHundido;
+        int contadorPersona;        
+        //disparo
         Coordenada disPersona;
-        Coordenada disOrdenador;
-        ArrayList<Coordenada> flotaPersona;
-        ArrayList<Coordenada> flotaOrdenador;
-        ArrayList<Barco> flotaOrd;
-        ArrayList<Coordenada[]> flotaO;
-        Tablero tableroDisparoPersona;
-        Tablero tableroBarcosP;
-        Tablero taberoDisparoOrdenador;
-        
-        ArrayList<Coordenada> conjuntoDisparosPersona;
-        
-        ArrayList<Coordenada> conjuntoDisparosOrdenador;
-        
-        boolean acierto;
-        
-        //crear flota persona
+         
+//PERSONA crear flota persona         
         Persona persona=new Persona();
         persona.posicionarFlota();
         
-        
         flotaPersona= new ArrayList<Coordenada>();
         flotaPersona=persona.getPosicionesOcupadasFlota();
+        flotaP=new ArrayList<Coordenada[]>();
+        flotaP= persona.getFlotaP();
+        tableroDisparoPersona= new Tablero();
+        tableroDisparoPersona.tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
         
-        
-        //crear flota ordenador
+        conjuntoDisparosPersona=new ArrayList<Coordenada>();
+        contadorPersona=0;//cuenta los barcos hundidos
+         
+//ORDENADOR  *******************************************        
+   		//flota
+   		List<Coordenada> flotaOrdenador;
+        List<Coordenada[]> flotaO;         
+        //tablero
+        Tablero tableroDisparoOrdenador;           
+        List<Coordenada> conjuntoDisparosOrdenador;             
+        int contadorOrdenador;
+        boolean terminar;
+        //disparos
+        Coordenada disOrdenador;
+        Coordenada disRecuerdo= new Coordenada();
+        Coordenada disListo= new Coordenada();
+        Coordenada proxDisparo= new Coordenada();
+        Coordenada disAlternativo= new Coordenada();
+        List<Coordenada> disparoListo;
+        List<Coordenada> proximoDisparo;
+        List<Coordenada> disparoAlternativo;
+           
+//ORDENADOR crear flota ordenador
         Ordenador ordenador=new Ordenador();
-        ordenador.posicionarFlota();// este método nos enseña el tablero de barcos del ordenador, es de prueba, no se visualizará
-       
+        ordenador.posicionarFlota();
+                             
         flotaOrdenador=new ArrayList<Coordenada>();
         flotaOrdenador=ordenador.getPosicionesOcupadasFlotaOrdenador();
-        
-        flotaOrd=new ArrayList<Barco>();
-        flotaOrd= ordenador.getFlota();
         flotaO=new ArrayList<Coordenada[]>();
         flotaO= ordenador.getFlotaO();
-        
-        String respuesta="";
-        //disparos - tablero persona
-        
-        
-        
-        //disPersona= new Coordenada();
-        //System.out.print("Piense en su disparo... ");
-        //disPersona= persona.crearDisparo();//se crea el primer disparo de la persona
-        conjuntoDisparosPersona=new ArrayList<Coordenada>();
-        conjuntoDisparosOrdenador=new ArrayList<Coordenada>();
-        //conjuntoDisparosPersona.add(disPersona);//añado el primer disparo
-        
-        tableroDisparoPersona= new Tablero();
-        tableroDisparoPersona.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
-        //acierto=false;
-        
-        for(int i=0;i<2;i++){
-        //disparo Persona
-        disPersona=persona.disparar(conjuntoDisparosPersona);
-        conjuntoDisparosPersona=persona.añadirDisparo(disPersona,conjuntoDisparosPersona);
-        
-        
-        /*
-         * es un disparo certero? dispara la persona contra la flota del ordenador
-         * compruebo el disparo en el array de coordenadas (aciertaEnCoordenadaContraria(disparo,flotaContraria) o en el array de barcos?
-         * tengo que cambiar mi tablero de disparos y mostrarlo (antes de disparar tambien tengo que mostrar mi tablero de disparos)
-         * como cambio tocado a hundido??
-         * 
-         * 
-         */
-        //tableroDisparoPersona.imprimirTableroDisparos();//se muestra el tablero de disparos      
-       
-        //persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
-        //persona.esTocado(disPersona,flotaOrd);//??
-        
-        acierto=persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
-        tableroDisparoPersona.anotarDisparoEnTablero(disPersona,acierto);//se apunta el disparo
-        tableroDisparoPersona.imprimirTableroDisparos();
-        persona.marcarTocados(disPersona,flotaO);//las coordenadas acertadas se cambian a 100 
-        }
+        tableroDisparoOrdenador= new Tablero(); //para comprobar el hundido
+        tableroDisparoOrdenador.tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
+        conjuntoDisparosOrdenador=new ArrayList<Coordenada>();// se añaden después, disparo a disparo
+        contadorOrdenador=0;//cuenta los barcos hundidos
+        terminar=false;        
+        //disparos
+        ordenador.iniciarDisparoListo();
+        ordenador.iniciarProximoDisparo();
+        ordenador.iniciarDisparoAlternativo();
            
-        
-        //disparo Ordenador
-        disOrdenador=ordenador.disparar(conjuntoDisparosOrdenador);
-        conjuntoDisparosOrdenador=ordenador.añadirDisparo(disOrdenador,conjuntoDisparosOrdenador);
-        persona.mostrarTableroBarcosFlota();
-        respuesta=ordenador.solicitarResultadoDisparo();
-        System.out.println("esta es la respuesta: "+respuesta);
-        
-        
-        /*
-         * método que recoja la respuesta de persona y la del método acierta y las compruebe..
-         */
-        
-        acierto=ordenador.aciertaEnCoordenadaContraria(disOrdenador, flotaPersona);
-        
-        //es disparo certero? dispara el ordenador contra la flota de la persona
-        
-        /*
-         * el disparo del ordenador:
-         * -se elige coordenada aleatoria y se comprueba que no fue usada antes
-         * -se comprueba la coordenada aleatoria válida contra la flotaPersona:
-         * --se pide a la persona que conteste (tenemos que mostrarle antes el tablero de barcos persona)
-         * --comprobamos que la contestación es correcta
-         * -anotamos dicha contestación sobre el tablero de barcos persona
-         * -si es tocado o hundido se repite el disparo del ordenador
-         * -si es tocado el disparo tiene que ser un disparo listo / si es hundido es disparo aleatorio
-         */
-        
-/*
-       //DISPARO PERSONA
-	        if(persona.realizarDisparo(disPersona,flotaOrdenador)==true){//devuelve verdadero si es tocado
-	            do{
-	                System.out.println("tocado");
-	                System.out.println();
-	                tableroDisparoPersona.anotarDisparoEnTablero(disPersona,true);//se apunta el disparo
-	                tableroDisparoPersona.imprimirTableroDisparos();//se muestra el tablero de disparos
-	                do{
-	                	System.out.println("Dispare. ");
-	                	disPersona=persona.crearDisparo();//nuevo disparo
-		                if (persona.comprobarDisparo(disPersona, conjuntoDisparosPersona)==true){//se comprueba que es válido y se guarda para no repetirlo
-		                    conjuntoDisparosPersona.add(disPersona);
-		                    
-		                }else {
-		                    System.out.println("el disparo es repetido.Piense en otro... ");
-		                    System.out.println();
-		                }
-	                }while(persona.comprobarDisparo(disPersona, conjuntoDisparosPersona)==true);// hay que decir que no repita disparo
-                 
-	            }while (persona.realizarDisparo(disPersona,flotaOrdenador)==true);
-	            //el disparo TOCA un barco
-	            //informo de tocado
-	            //modifico el tablero
-	            //solicito nueva coordenada
+        disparoListo=ordenador.getDisparoListo();
+        proximoDisparo=ordenador.getProximoDisparo();
+        disparoAlternativo=ordenador.getDisparoAlternativo();
+                          
+        String respuesta=""; 
+        boolean salir=false;
+           
+//PERSONA turno de disparos  *******************************************
+        try{       
+        do{//este do es para que los turnos sean continuos
+		
+	        do{
+		        tableroDisparoPersona.imprimirTableroDisparos();
+			    disPersona=persona.disparar(conjuntoDisparosPersona);
+			    conjuntoDisparosPersona=persona.añadirDisparo(disPersona,conjuntoDisparosPersona);
+			    acierto=persona.aciertaEnCoordenadaContraria(disPersona,flotaOrdenador);
+			    
+			    if(acierto){
+			    	System.out.println("Tocado!");
+			    }else{
+			    	System.out.println("Agua");
+			    }
+			    	    
+			    tableroDisparoPersona.anotarDisparoEnTablero(disPersona,acierto);//se apunta tocado o agua
+			    tableroDisparoPersona.imprimirTableroDisparos();
+			           
+			    if (acierto){
+			    	devHundido=persona.comprobarHundido(flotaO,tableroDisparoPersona);
+			        if (devHundido){
+			        	tableroDisparoPersona.imprimirTableroDisparos();
+			        	contadorPersona=contadorPersona+1;//cada hundido suma 1.        	        		  
+			        }
+			    }
+			    if (contadorPersona==GlobalConstants.NUMERO_TOTAL_BARCOS){
+		    		break;
+		    	}	
+	        }while (acierto && (contadorPersona!=GlobalConstants.NUMERO_TOTAL_BARCOS));
+	        
+	        if (contadorPersona==GlobalConstants.NUMERO_TOTAL_BARCOS){
+	    		System.out.println("Fin del juego. Gana usted. Enhorabuena");
+	    		break;
 	        }
-	        if (persona.realizarDisparo(disPersona,flotaOrdenador)==false){
-	            System.out.println("agua");
-	            System.out.println();
-	            tableroDisparoPersona.anotarDisparoEnTablero(disPersona,false);
-	            tableroDisparoPersona.imprimirTableroDisparos();
+//ORDENADOR turno de disparos   *******************************************  	
+	        
+	        salir=persona.salir();
+			if(salir){break;}
+			
+	        do{
+	        	disparoListo=ordenador.getDisparoListo();
+		        if (!disparoListo.isEmpty()){ //si no está vacío extraigo su 1ºcoordenada y la elimino del array
+		        	do{
+		        		disListo=disparoListo.get(0);//1º coordenada
+		        		disparoListo.remove(0);
+		        		resultado=ordenador.comprobarConjuntoDisparos(disListo,conjuntoDisparosOrdenador);
+		        	}while(resultado); //compruebo que la coordenada no fue utilizada antes
+		        	ordenador.mostrarDisparo(disListo);
+		        	conjuntoDisparosOrdenador=ordenador.añadirDisparo(disListo, conjuntoDisparosOrdenador);	//para que no se vuelva a utilizar el mismo disparo
+		        	acierto=ordenador.aciertaEnCoordenadaContraria(disListo,flotaPersona);//true si es Tocado
+		        		 		
+		        	tableroDisparoOrdenador.anotarDisparoEnTablero(disListo,acierto);//se apunta tocado o agua
+		        	esHundido=ordenador.comprobarHundido(flotaP,tableroDisparoOrdenador);	        	
+		        	
+		        	//respuesta de jugador persona 
+		        	persona.mostrarTableroBarcosFlota();//muestro el tablero de barcos de la persona jugadora para que pueda contestar
+		        	respuesta=ordenador.solicitarResultadoDisparo();//devuelve A,T o H        	            
+		        	persona.anotarEnTableroBarcos(disListo, acierto);
+		        	terminar=ordenador.juegoTramposo(acierto,esHundido,respuesta);//si se responde con trampa (devuelve un true) terminamos el juego
+		        		        					        		 		
+		        	if(esHundido){	        		
+			        	contadorOrdenador=contadorOrdenador+1;	        	
+		        		ordenador.limpiarDisparoListo();
+		        	}		
+		        	if(acierto && !esHundido){
+		        		ordenador.limpiarDisparoListo();				        		
+		        		ordenador.crearProximoDisparo(disRecuerdo, disListo);
+		        		proximoDisparo=ordenador.getProximoDisparo();
+		        		disparoAlternativo=ordenador.getDisparoAlternativo();	        		
+		        	}  
+		        }        		 		        		 		
+		        else if(!proximoDisparo.isEmpty()){
+		        	do{
+		        		proxDisparo=proximoDisparo.get(0);
+		        	    proximoDisparo.remove(0);
+		        	    resultado=ordenador.comprobarConjuntoDisparos(proxDisparo,conjuntoDisparosOrdenador);
+		        	}while (resultado);
+		        	ordenador.mostrarDisparo(proxDisparo);
+		        	conjuntoDisparosOrdenador=ordenador.añadirDisparo(proxDisparo, conjuntoDisparosOrdenador);
+		        	acierto=ordenador.aciertaEnCoordenadaContraria(proxDisparo,flotaPersona);
+		        	        	
+		        	tableroDisparoOrdenador.anotarDisparoEnTablero(proxDisparo,acierto);
+		        	esHundido=ordenador.comprobarHundido(flotaP,tableroDisparoOrdenador);
+	
+		        	persona.mostrarTableroBarcosFlota();
+		        	respuesta=ordenador.solicitarResultadoDisparo();       	            
+		        	persona.anotarEnTableroBarcos(proxDisparo, acierto); 
+		        	terminar=ordenador.juegoTramposo(acierto,esHundido,respuesta);
+		        	  	        	
+		        	if(esHundido){	        		
+			        	contadorOrdenador=contadorOrdenador+1;	        	
+		        		ordenador.limpiarProximoDisparo();//se desecha el array y se limpia
+		        		ordenador.limpiarDisparoAlternativo();       		
+		        	}	        	
+		        	/*
+		        	if (acierto && !esHundido){
+		        		System.out.println("pasa por interior de acierto y !esHundido proximoDisparo");
+		        	}
+		        	*/
+		        	if(!acierto){
+		        		ordenador.limpiarProximoDisparo();
+		                disparoAlternativo=ordenador.getDisparoAlternativo();
+		        	}
+		        }    
+		        else if(!disparoAlternativo.isEmpty()){
+		        	do{
+		        		disAlternativo=disparoAlternativo.get(0);
+		        	    disparoAlternativo.remove(0);
+		        	    resultado=ordenador.comprobarConjuntoDisparos(disAlternativo,conjuntoDisparosOrdenador);
+		        	}while (resultado);
+		        	ordenador.mostrarDisparo(disAlternativo);
+		        	conjuntoDisparosOrdenador=ordenador.añadirDisparo(disAlternativo, conjuntoDisparosOrdenador);
+		        	acierto=ordenador.aciertaEnCoordenadaContraria(disAlternativo,flotaPersona);
+		        	            	
+		        	tableroDisparoOrdenador.anotarDisparoEnTablero(disAlternativo,acierto);
+		        	esHundido=ordenador.comprobarHundido(flotaP,tableroDisparoOrdenador);
+		        	
+		        	persona.mostrarTableroBarcosFlota();
+		        	respuesta=ordenador.solicitarResultadoDisparo();       	            
+		        	persona.anotarEnTableroBarcos(disAlternativo, acierto); 
+		        	terminar=ordenador.juegoTramposo(acierto,esHundido,respuesta);
+		        	   	        	
+		        	if(esHundido){	        		
+			        	contadorOrdenador=contadorOrdenador+1;
+		        		ordenador.limpiarDisparoAlternativo();
+		        	}
+		        	//si es acierto continua y aquí no habrá !acierto
+		        	/*
+		        	if (acierto && !esHundido){
+		        		System.out.println("pasa por interior de acierto y !esHundido disAlternativo");
+		        		//AQUÍ NECESITO UN BUCLE DE ACIERTO EN DISPARO ALTERNATIVO
+		        		
+		        		//tiramos la siguiente coordenada de disparoAlternativo
+		        	}
+		        	
+		        	if(!acierto){
+		        		//nunca habrá no acierto
+		        	}
+		        	*/      	        	            	
+		        }
+		        else{
+		        	disOrdenador=ordenador.disparar(conjuntoDisparosOrdenador);
+		        	conjuntoDisparosOrdenador=ordenador.añadirDisparo(disOrdenador,conjuntoDisparosOrdenador);
+		        	acierto=ordenador.aciertaEnCoordenadaContraria(disOrdenador,flotaPersona);
+		        	tableroDisparoOrdenador.anotarDisparoEnTablero(disOrdenador,acierto); 	
+		       		esHundido=ordenador.comprobarHundido(flotaP,tableroDisparoOrdenador);//en este bucle no se dará hundido          
+		        	/*
+		       		if(esHundido){//aquí no se dará la condición de hundido
+		        		contadorOrdenador=contadorOrdenador+1;
+		        	}
+		        	*/	       		
+		        	
+		       		persona.mostrarTableroBarcosFlota();
+		        	respuesta=ordenador.solicitarResultadoDisparo();       	            
+		        	persona.anotarEnTableroBarcos(disOrdenador, acierto);
+		        	terminar=ordenador.juegoTramposo(acierto,esHundido,respuesta);
+		        	if(terminar){break;}       		        	
+		        	if (acierto){//aquí no se dará la condición de hundido (acierto && !esHundido)
+		        		disRecuerdo=disOrdenador;
+		        	    ordenador.crearDisparoListo(disOrdenador);           	
+		        	}	        	
+		        }
+		        if (contadorOrdenador==GlobalConstants.NUMERO_TOTAL_BARCOS){break;}	
+		        
+	        }while(acierto);
+	        
+	        if (contadorOrdenador==GlobalConstants.NUMERO_TOTAL_BARCOS||terminar){
+	        	System.out.println("El Ordenador gana.");
+	        	break;
 	        }
 	        
-	    //DISPARO ORDENADOR
-	    disOrdenador= new Coordenada();
-	    System.out.println();
-	    System.out.print("Recuerde la posición de su flota: ");
-	    persona.mostrarTableroBarcosFlota();
-
-	    System.out.print("Disparo del Ordenador: ");
-	    disOrdenador=ordenador.crearDisparoAleatorio();// se crea el primer disparo del ordenador OJO
-	    ordenador.mostrarDisparoAleatorio(disOrdenador);
-	    
-	    conjuntoDisparosOrdenador=new ArrayList();//se crea el array donde se almacenarán los disparos del ordenador
-	    conjuntoDisparosOrdenador.add(disOrdenador);//añado el primer disparo   
-
-	    ordenador.solicitarResultadoDisparo();//se le pide a la persona que conteste si el disparo tocó, hundió o resulto ser agua
-	        
-	    //método para comprobar que la persona dice la verdad
-	        
-	    if (ordenador.realizarDisparo(disOrdenador, flotaPersona)==true){//No funciona     	
-	        System.out.println("aquí. tocado");
-	        //faltan las restricciones para hundido
-	    }else{
-	        System.out.println("agua");
-	    }       
-*/
-        
-
-        
+        }while(!acierto);
+        }catch(IndexOutOfBoundsException e){}
+        System.out.println("Fin del juego.");
     }
     
-
-    
-    
+   
 }
+
+
 

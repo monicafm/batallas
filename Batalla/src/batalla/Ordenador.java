@@ -1,20 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package batalla;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
-/**
- *
- * @author monica
- */
+
 public class Ordenador extends Participante{
     
     private Coordenada coordOrdenador;
-    //private Orientacion orientacionOrdenador;
     private Barco submarinoOrdenador;
     private Barco fragataOrdenador;
     private Barco acorazadoOrdenador;
@@ -22,17 +15,18 @@ public class Ordenador extends Participante{
     
     private Tablero tableroBarcosOrdenador;
     
-	private ArrayList<Coordenada> aSubOrdenador=new ArrayList<Coordenada>();
-	private ArrayList<Coordenada> aFraOrdenador=new ArrayList<Coordenada>();
-	private ArrayList<Coordenada> aAcoOrdenador=new ArrayList<Coordenada>();
-	private ArrayList<Coordenada> aPortaOrdenador=new ArrayList<Coordenada>();
+	private List<Coordenada> aSubOrdenador=new ArrayList<Coordenada>();
+	private List<Coordenada> aFraOrdenador=new ArrayList<Coordenada>();
+	private List<Coordenada> aAcoOrdenador=new ArrayList<Coordenada>();
+	private List<Coordenada> aPortaOrdenador=new ArrayList<Coordenada>();
     
-    private ArrayList<Barco> flotaOrdenador;
-    private ArrayList<Coordenada[]>flotaO;
-    private ArrayList<Coordenada> posicionesOcupadasFlotaOrdenador;
-    private ArrayList<Coordenada> posicionesPerimetralesFlotaOrdenador;
+    private List<Coordenada[]>flotaO;
+    private List<Coordenada> posicionesOcupadasFlotaOrdenador;
+    private List<Coordenada> posicionesPerimetralesFlotaOrdenador;
     
-    private ArrayList<Coordenada> disparoListo;
+    private List<Coordenada> disparoListo;
+    private List<Coordenada> proximoDisparo;
+    private List<Coordenada> disparoAlternativo;
     
     private String resultadoDisparoOrdenador;
     
@@ -48,9 +42,8 @@ public class Ordenador extends Participante{
         aPortaOrdenador=null;
     	
         tableroBarcosOrdenador= new Tablero();
-        tableroBarcosOrdenador.Tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
+        tableroBarcosOrdenador.tablero(GlobalConstants.ANCHO_MAX_TABLERO,GlobalConstants.ALTO_MAX_TABLERO);
         
-    	flotaOrdenador=new ArrayList<Barco>();
     	flotaO= new ArrayList<Coordenada[]>();
         posicionesOcupadasFlotaOrdenador= new ArrayList<Coordenada>();
         posicionesPerimetralesFlotaOrdenador= new ArrayList<Coordenada>();
@@ -71,7 +64,6 @@ public class Ordenador extends Participante{
             //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(submarinoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_SUBMARINO);
             
-            flotaOrdenador=getFlota(submarinoOrdenador);//??
             flotaO=getFlotaO(submarinoOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aSubOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(submarinoOrdenador);            
@@ -87,11 +79,9 @@ public class Ordenador extends Participante{
                 aFraOrdenador=fragataOrdenador.getPosicionesBarco(coordOrdenador,orientacionAleatoria);
                 
             }while (fragataOrdenador.comprobarBarco(aFraOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
-                        
-            //colocar barco en el tablero 
+                         
             tableroBarcosOrdenador.colocarBarcoEnTablero(fragataOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_FRAGATA); 
             
-            flotaOrdenador=getFlota(fragataOrdenador);//??
             flotaO=getFlotaO(fragataOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aFraOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(fragataOrdenador);
@@ -109,10 +99,8 @@ public class Ordenador extends Participante{
                 
             }while (acorazadoOrdenador.comprobarBarco(aAcoOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
                         
-            //colocar barco en el tablero 
             tableroBarcosOrdenador.colocarBarcoEnTablero(acorazadoOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_ACORAZADO);  
             
-            flotaOrdenador=getFlota(acorazadoOrdenador);//??
             flotaO=getFlotaO(acorazadoOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aAcoOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(acorazadoOrdenador);
@@ -122,10 +110,7 @@ public class Ordenador extends Participante{
 
         //PORTAAVIONES ORDENADOR
         for (int i=0;i<GlobalConstants.NUMERO_PORTAAVIONES;i++){
-            do{
-                //System.out.println();
-                //System.out.println("ACORAZADO "+(i+1));
-                
+            do{               
                 orientacionAleatoria=pedirOrientacionAleatoria();
                 coordOrdenador= coordenadaValidaAleatoria(orientacionAleatoria,GlobalConstants.TAMANO_PORTAAVIONES);
                 
@@ -134,132 +119,291 @@ public class Ordenador extends Participante{
                 
             }while (portaavionesOrdenador.comprobarBarco(aPortaOrdenador, posicionesOcupadasFlotaOrdenador, posicionesPerimetralesFlotaOrdenador));
             
-            
-            //colocar barco en el tablero 
+             
             tableroBarcosOrdenador.colocarBarcoEnTablero(portaavionesOrdenador.getBarcoConstruido(),GlobalConstants.TAMANO_PORTAAVIONES);
-            //PRUEBA-ELIMINAR
-            tableroBarcosOrdenador.imprimirTableroBarcos();  
-            //FIN PRUEBA-ELIMINAR
-            
-            flotaOrdenador=getFlota(portaavionesOrdenador);//??
+   
             flotaO=getFlotaO(portaavionesOrdenador.getBarcoConstruido());
             posicionesOcupadasFlotaOrdenador= getPosicionesOcupadasFlotaOrdenador(aPortaOrdenador);
             posicionesPerimetralesFlotaOrdenador= getPosicionesPerimetralesFlotaOrdenador(portaavionesOrdenador);
-        
-            //PRUEBA-ELIMINAR
-            Iterator<Coordenada> itera=posicionesOcupadasFlotaOrdenador.iterator();
-            System.out.println();
-            System.out.print("***posiciones ocupadas por barcos de la Flota: ");
-            while(itera.hasNext()){
-                Object recorrerCoor =itera.next();
-                Coordenada recor= (Coordenada) recorrerCoor;
-                System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
-            }            
-            Iterator<Coordenada> iter=posicionesPerimetralesFlotaOrdenador.iterator();
-            System.out.println();
-            System.out.print("***posiciones perimetrales de la Flota: ");
-            while(iter.hasNext()){
-                Object recorrerCoor =iter.next();
-                Coordenada recor= (Coordenada) recorrerCoor;
-                System.out.print("("+recor.getCoordenadaX()+","+recor.getCoordenadaY()+("); "));
-            }
-            System.out.println();
-            //FIN PRUEBA-ELIMINAR          
             
         }
         
     }
-    
-    
+      
     
     public Coordenada crearDisparoAleatorio(){
-    	int x;
-    	int y;
         disparoAleatorio=new Coordenada();
         disparoAleatorio.coordenadaAleatoria();
 
        return disparoAleatorio; 
     }
-    public void mostrarDisparoAleatorio(Coordenada c){
+    public void mostrarDisparo(Coordenada c){
     	int x;
     	int y;
-        
-        x=c.getCoordenadaX();//la persona nombra a las filas y columnas empezando en el 1
+    	//la persona nombra a las filas y columnas empezando en el 1 y así se muestran
+        x=c.getCoordenadaX();
         y=c.getCoordenadaY();
-        //System.out.println("antes: ("+x+","+y+")");
-
-        System.out.print("mostrar ("+(x+1)+","+(y+1)+")");
+        System.out.println();
+        System.out.print("El disparo del ordenador es:");
+        System.out.print(" "+(x+1)+"-"+(y+1)+" ");
     }
     
-    public void crearDisparoListo(Coordenada c){
-    	disparoListo= new ArrayList();
-    	Coordenada lista=new Coordenada();
-    	
-    	//disparo a la casilla de arriba
-    	lista.setCoordenadaX(c.getCoordenadaX()-1);
-    	lista.setCoordenadaY(c.getCoordenadaY());
-    	    	
-    	disparoListo.add(1,lista);
-    	//disparo a la casilla de la derecha
-    	lista.setCoordenadaX(c.getCoordenadaX());
-    	lista.setCoordenadaY(c.getCoordenadaY()+1);
-    	    	
-    	disparoListo.add(2,lista);
-    	
-    	//disparo a la casilla de abajo
-    	lista.setCoordenadaX(c.getCoordenadaX()+1);
-    	lista.setCoordenadaY(c.getCoordenadaY());
-    	    	
-    	disparoListo.add(3,lista);
-    	
-    	//disparo a la casilla de la izquierda
-    	lista.setCoordenadaX(c.getCoordenadaX());
-    	lista.setCoordenadaY(c.getCoordenadaY()-1);
-    	    	
-    	disparoListo.add(4,lista);
-    	
-    	
+    public void iniciarDisparoListo(){
+    	disparoListo= new ArrayList<Coordenada>();
     }
-    public ArrayList<Coordenada> getDisparoListo(){
+    public void iniciarProximoDisparo(){
+    	proximoDisparo= new ArrayList<Coordenada>();
+    }
+    public void iniciarDisparoAlternativo(){
+    	disparoAlternativo= new ArrayList<Coordenada>();
+    }
+    
+    
+    public void crearDisparoListo(Coordenada c){
+    	/* cuando tenemos un tocado del ordenador le calculamos las
+    	 * siguientes tiradas 
+    	 */
+    	disparoListo= new ArrayList<Coordenada>();
+    	
+    	Coordenada cordlista1=new Coordenada();
+    	Coordenada cordlista2=new Coordenada();
+    	Coordenada cordlista3=new Coordenada();
+    	Coordenada cordlista4=new Coordenada();
+    	
+    	if(c.getCoordenadaX()!=0){
+    		//disparo a la casilla de arriba
+    		cordlista1.setCoordenadaX(c.getCoordenadaX()-1);
+    		cordlista1.setCoordenadaY(c.getCoordenadaY());
+        	disparoListo.add(cordlista1);
+    	}
+    	if(c.getCoordenadaY()!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+    		//disparo a la casilla de la derecha
+    		cordlista2.setCoordenadaX(c.getCoordenadaX());
+    		cordlista2.setCoordenadaY(c.getCoordenadaY()+1);        	    	
+        	disparoListo.add(cordlista2);
+    	}
+    	if(c.getCoordenadaX()!=GlobalConstants.ALTO_MAX_TABLERO-1){
+        	//disparo a la casilla de abajo
+    		cordlista3.setCoordenadaX(c.getCoordenadaX()+1);
+    		cordlista3.setCoordenadaY(c.getCoordenadaY());        	    	
+        	disparoListo.add(cordlista3);
+    	}   	
+    	if(c.getCoordenadaY()!=0){
+    		//disparo a la casilla de la izquierda
+    		cordlista4.setCoordenadaX(c.getCoordenadaX());
+    		cordlista4.setCoordenadaY(c.getCoordenadaY()-1);       	    	
+        	disparoListo.add(cordlista4);	
+    	}    	
+    }
+    
+    public void crearProximoDisparo(Coordenada disOrd, Coordenada disListo){   	
+    	/* tenemos dos coordenadas tocadas contiguas lo que implica que tenemos la orientación
+    	 * calculamos dos arrays, siguiendo la orientación, uno en cada sentido
+    	 * los arrays los creamos con 3 coordenadas a cada lado (el máximo tamaño:
+    	 * tamañoPortaaviones menos las 2 coordenadas que ya tenemos)
+    	 */
+    	proximoDisparo=new ArrayList<Coordenada>();
+    	Coordenada coorProxDis1= new Coordenada();
+    	Coordenada coorProxDis2= new Coordenada();
+    	Coordenada coorProxDis3= new Coordenada();
+    	
+    	disparoAlternativo=new ArrayList<Coordenada>();
+    	Coordenada coorDisAlt1= new Coordenada();
+    	Coordenada coorDisAlt2= new Coordenada();
+    	Coordenada coorDisAlt3= new Coordenada();
+    	
+    	if(disOrd.getCoordenadaX()==disListo.getCoordenadaX()){//nos indica orientación horizontal
+    		if (disOrd.getCoordenadaY()< disListo.getCoordenadaY()){//faltan los límites del tablero
+    			if (disListo.getCoordenadaY()!=GlobalConstants.ANCHO_MAX_TABLERO-1){    				
+    	    			coorProxDis1.setCoordenadaX(disListo.getCoordenadaX());
+    	    			coorProxDis1.setCoordenadaY(disListo.getCoordenadaY()+1);
+    	    			proximoDisparo.add(coorProxDis1);
+    	    			if(disListo.getCoordenadaY()+1!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+    	    				coorProxDis2.setCoordenadaX(disListo.getCoordenadaX());
+        	    			coorProxDis2.setCoordenadaY(disListo.getCoordenadaY()+2);
+        	    			proximoDisparo.add(coorProxDis2);
+        	    			if(disListo.getCoordenadaY()+2!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+        	    				coorProxDis3.setCoordenadaX(disListo.getCoordenadaX());
+            	    			coorProxDis3.setCoordenadaY(disListo.getCoordenadaY()+3);
+            	    			proximoDisparo.add(coorProxDis3);
+        	    			}
+    	    			}    	    		   			
+    			}
+    			if(disListo.getCoordenadaY()-1!=0){
+        			coorDisAlt1.setCoordenadaX(disListo.getCoordenadaX());
+        			coorDisAlt1.setCoordenadaY(disListo.getCoordenadaY()-2);
+        			disparoAlternativo.add(coorDisAlt1);
+        			if(disListo.getCoordenadaY()-2!=0){
+        				coorDisAlt2.setCoordenadaX(disListo.getCoordenadaX());
+            			coorDisAlt2.setCoordenadaY(disListo.getCoordenadaY()-3);
+               			disparoAlternativo.add(coorDisAlt2);
+               			if(disListo.getCoordenadaY()-3!=0){
+               				coorDisAlt3.setCoordenadaX(disListo.getCoordenadaX());
+                			coorDisAlt3.setCoordenadaY(disListo.getCoordenadaY()-4);
+                			disparoAlternativo.add(coorDisAlt3);
+               			}
+        			}
+    			}   			    			
+    		}else{
+    			if (disListo.getCoordenadaY()!=0){
+    				coorProxDis1.setCoordenadaX(disListo.getCoordenadaX());
+        			coorProxDis1.setCoordenadaY(disListo.getCoordenadaY()-1);
+        			proximoDisparo.add(coorProxDis1);
+        			if (disListo.getCoordenadaY()-1!=0){
+        				coorProxDis2.setCoordenadaX(disListo.getCoordenadaX());
+            			coorProxDis2.setCoordenadaY(disListo.getCoordenadaY()-2);
+            			proximoDisparo.add(coorProxDis2);
+            			if (disListo.getCoordenadaY()-2!=0){
+            				coorProxDis3.setCoordenadaX(disListo.getCoordenadaX());
+                			coorProxDis3.setCoordenadaY(disListo.getCoordenadaY()-3);              			
+                			proximoDisparo.add(coorProxDis3);
+            			}
+        			}
+    			}
+    			if (disListo.getCoordenadaY()+1!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+    				coorDisAlt1.setCoordenadaX(disListo.getCoordenadaX());
+        			coorDisAlt1.setCoordenadaY(disListo.getCoordenadaY()+2);
+        			disparoAlternativo.add(coorDisAlt1);
+        			if(disListo.getCoordenadaY()+2!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+        				coorDisAlt2.setCoordenadaX(disListo.getCoordenadaX());
+            			coorDisAlt2.setCoordenadaY(disListo.getCoordenadaY()+3);
+            			disparoAlternativo.add(coorDisAlt2);
+            			if(disListo.getCoordenadaY()+3!=GlobalConstants.ANCHO_MAX_TABLERO-1){
+            				coorDisAlt3.setCoordenadaX(disListo.getCoordenadaX());
+                			coorDisAlt3.setCoordenadaY(disListo.getCoordenadaY()+4);               			
+                			disparoAlternativo.add(coorDisAlt3);
+            			}
+        			}
+    			}	
+    		}
+    	}
+    	if(disOrd.getCoordenadaY()==disListo.getCoordenadaY()){//nos indica orientación vertical
+    		if (disOrd.getCoordenadaX()< disListo.getCoordenadaX()){//faltan los límites del tablero
+    			if(disListo.getCoordenadaX()!=GlobalConstants.ALTO_MAX_TABLERO-1){
+    				coorProxDis1.setCoordenadaX(disListo.getCoordenadaX()+1);
+        			coorProxDis1.setCoordenadaY(disListo.getCoordenadaY());
+        			proximoDisparo.add(coorProxDis1);
+        			if(disListo.getCoordenadaX()+1!=GlobalConstants.ALTO_MAX_TABLERO-1){
+        				coorProxDis2.setCoordenadaX(disListo.getCoordenadaX()+2);
+            			coorProxDis2.setCoordenadaY(disListo.getCoordenadaY());
+            			proximoDisparo.add(coorProxDis2);
+            			if(disListo.getCoordenadaX()+2!=GlobalConstants.ALTO_MAX_TABLERO-1){
+            				coorProxDis3.setCoordenadaX(disListo.getCoordenadaX()+3);
+                			coorProxDis3.setCoordenadaY(disListo.getCoordenadaY());
+                			proximoDisparo.add(coorProxDis3);
+            			}
+        			}
+    			}
+    			if(disListo.getCoordenadaX()-1!=0){
+    				coorDisAlt1.setCoordenadaX(disListo.getCoordenadaX()-2);
+        			coorDisAlt1.setCoordenadaY(disListo.getCoordenadaY());
+        			disparoAlternativo.add(coorDisAlt1);
+        			if(disListo.getCoordenadaX()-2!=0){
+        				coorDisAlt2.setCoordenadaX(disListo.getCoordenadaX()-3);
+            			coorDisAlt2.setCoordenadaY(disListo.getCoordenadaY());
+            			disparoAlternativo.add(coorDisAlt2);
+            			if(disListo.getCoordenadaX()-3!=0){
+            				coorDisAlt3.setCoordenadaX(disListo.getCoordenadaX()-4);
+                			coorDisAlt3.setCoordenadaY(disListo.getCoordenadaY());  			
+                			disparoAlternativo.add(coorDisAlt3);
+            			}
+        			}
+    			}			
+    		}else{
+    			if(disListo.getCoordenadaX()!=0){
+        			coorProxDis1.setCoordenadaX(disListo.getCoordenadaX()-1);
+        			coorProxDis1.setCoordenadaY(disListo.getCoordenadaY());
+        			proximoDisparo.add(coorProxDis1);
+        			if(disListo.getCoordenadaX()-1!=0){
+            			coorProxDis2.setCoordenadaX(disListo.getCoordenadaX()-2);
+            			coorProxDis2.setCoordenadaY(disListo.getCoordenadaY());
+            			proximoDisparo.add(coorProxDis2);
+            			if(disListo.getCoordenadaX()-2!=0){
+            				coorProxDis3.setCoordenadaX(disListo.getCoordenadaX()-3);
+                			coorProxDis3.setCoordenadaY(disListo.getCoordenadaY());  			
+                			proximoDisparo.add(coorProxDis3);
+            			}
+        			}
+    			}
+    			
+    			if(disListo.getCoordenadaX()+1!=GlobalConstants.ALTO_MAX_TABLERO){
+    				coorDisAlt1.setCoordenadaX(disListo.getCoordenadaX()+2);
+        			coorDisAlt1.setCoordenadaY(disListo.getCoordenadaY());
+        			disparoAlternativo.add(coorDisAlt1);
+        			if(disListo.getCoordenadaX()+2!=GlobalConstants.ALTO_MAX_TABLERO){
+        				coorDisAlt2.setCoordenadaX(disListo.getCoordenadaX()+3);
+            			coorDisAlt2.setCoordenadaY(disListo.getCoordenadaY());
+            			disparoAlternativo.add(coorDisAlt2);
+            			if(disListo.getCoordenadaX()+3!=GlobalConstants.ALTO_MAX_TABLERO){
+            				coorDisAlt3.setCoordenadaX(disListo.getCoordenadaX()+4);
+                			coorDisAlt3.setCoordenadaY(disListo.getCoordenadaY());
+                			disparoAlternativo.add(coorDisAlt3);
+            			}
+        			}
+    			}
+    		}
+    	}	
+    	    	
+    }
+    
+    public List<Coordenada> getDisparoListo(){
     	return disparoListo;
     }
+    
+    public List<Coordenada> getProximoDisparo(){
+    	return proximoDisparo;
+    }
+    
+    public List<Coordenada> getDisparoAlternativo(){
+    	return disparoAlternativo;
+    }
+    
+    public void limpiarDisparoListo(){
+    	disparoListo.clear();
+    }
+    
+    public void limpiarProximoDisparo(){    
+    	proximoDisparo.clear();
+    }
+    
+    public void limpiarDisparoAlternativo(){
+    	disparoAlternativo.clear();
+    }
+    
     public String solicitarResultadoDisparo(){
     
         while (true) {
-        System.out.println("¿agua (A), tocado (T), hundido (H)?");
+        System.out.println("Agua (A), Tocado (T), Hundido (H)?");
         
         Scanner tecleo= new Scanner(System.in);	        
         resultadoDisparoOrdenador=tecleo.next();
         
 	        if (resultadoDisparoOrdenador.equalsIgnoreCase("A")){
-	        	System.out.println("agua");
 	        	break;
 	        }
 	        if (resultadoDisparoOrdenador.equalsIgnoreCase("T")){	        	
-	        	System.out.println("tocado");
 	        	break;
 	        } 
 	        if (resultadoDisparoOrdenador.equalsIgnoreCase("H")){
-	        	System.out.println("hundido");
 	        	break;
 	        }
 	        }
     	return resultadoDisparoOrdenador;
     }
     
-    public Coordenada coordenadaValidaAleatoria(String o,int tamano){//teniendo la orientacion y el tamaño del barco pide una coordenada hasta que sea válida
+    public Coordenada coordenadaValidaAleatoria(String o,int tamano){
+    //teniendo la orientacion y el tamaño del barco pide una coordenada hasta que sea válida
     	
         Coordenada coordOrdenador=new Coordenada();
         boolean resultado=false;
         
         do{
-	        //solicitar coordenada	
 	        coordOrdenador.coordenadaAleatoria();
 	        
 	        resultado=false;
-	        if(o.equalsIgnoreCase("h")){//si el barco es horizontal crece sobre las las columnas       
+	        if(o.equalsIgnoreCase("h")){//barco horizontal crece sobre las las columnas       
 	            if (coordOrdenador.getCoordenadaY()+tamano>GlobalConstants.ANCHO_MAX_TABLERO){
-	                resultado=true;//true el barco sale del tablero
+	                resultado=true;//se sale del tablero
 	            }    
 	        } else{
 	            if(coordOrdenador.getCoordenadaX()+tamano>GlobalConstants.ALTO_MAX_TABLERO){
@@ -286,48 +430,99 @@ public class Ordenador extends Participante{
     	return orientacionAleatoria;
     }
     
-    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(ArrayList<Coordenada> al){
+    public List<Coordenada> getPosicionesOcupadasFlotaOrdenador(List<Coordenada> al){
     	for (int j=0;j<al.size();j++){
     		posicionesOcupadasFlotaOrdenador.add(al.get(j));
     	}
         return posicionesOcupadasFlotaOrdenador; 
     }
     
-    public ArrayList<Coordenada> getPosicionesOcupadasFlotaOrdenador(){
+    public List<Coordenada> getPosicionesOcupadasFlotaOrdenador(){
     	return posicionesOcupadasFlotaOrdenador; 
     }
     
-    public ArrayList<Coordenada[]> getFlotaO(){
+    public List<Coordenada[]> getFlotaO(){
       	return flotaO;
     }
     
-    public ArrayList<Coordenada[]> getFlotaO(Coordenada[] barco){
-    	//ArrayList<Coordenada[]> flot;
+    public List<Coordenada[]> getFlotaO(Coordenada[] barco){   	
       	flotaO.add(barco);
       	return flotaO;
     }
     
-
-    
-    public ArrayList<Coordenada> getPosicionesPerimetralesFlotaOrdenador(Barco ba){
+    public List<Coordenada> getPosicionesPerimetralesFlotaOrdenador(Barco ba){
     	for (int k=0;k<ba.getPosicionesPerimetroBarco().size();k++){
     		posicionesPerimetralesFlotaOrdenador.add(ba.posicionesPerimetralesBarco.get(k));
         }   	
         return posicionesPerimetralesFlotaOrdenador; 
     }
     
-    public Coordenada disparar(ArrayList<Coordenada> conjuntoDisparos){// crea un disparo y comprueba que no fue usado
+    public Coordenada disparar(List<Coordenada> conjuntoDisparos){// crea un disparo y comprueba que no fue usado
     	Coordenada disparo=new Coordenada();
     	boolean resultado= false;
     	     	
-    	do{
-    		System.out.print("El disparo del ordenador es: ");
-        	disparo.coordenadaAleatoria();
-        	mostrarDisparoAleatorio(disparo);
+    	do{    		
+        	disparo.coordenadaAleatoria();       	
         	resultado=comprobarConjuntoDisparos(disparo, conjuntoDisparos);
     	}while(resultado);
-    	
+    	mostrarDisparo(disparo);
     	return disparo;
     }
+    
+    public boolean comprobarHundido(List<Coordenada[]> flota, Tablero tablero){
+		boolean bHundido=false;
+	  	 
+		int fila;
+	  	int columna;
+	  	boolean estCasilla=false;
+	  	boolean estCasillaFinal=false;
+	  	boolean hundido=true;
+		
+	  	for (Coordenada[] barc: flota){//para cada barco de la flota
+	  		int longitud=barc.length;
+	       	 
+	       	for (int i=0; i<longitud;i++){
+	       		fila=barc[i].getCoordenadaX();
+	       		columna=barc[i].getCoordenadaY();      		 
+	       		//si el estadoCasilla del tablero es agua(false) o tocado(true)
+	       		estCasilla=tablero.devolverEstadosCasilla(fila,columna);
+	       		if(estCasilla){//si la coordenada esta tocada
+	       			hundido=true;      			 
+	       		}else{
+	       			hundido=false;
+	       			break;
+	       		}     		 
+	       		estCasillaFinal=tablero.devolverEstadosCasilla(barc[longitud-1].getCoordenadaX(),barc[longitud-1].getCoordenadaY());
+	       		//si la última coordenada está tocada implica hundido      		
+	       		if(hundido && estCasillaFinal){//aquí sólo se llega con todas las coordenadas hundido true
+	       			bHundido=true;
+	       			tablero.anotarHundido(barc[longitud-1].getCoordenadaX(),barc[longitud-1].getCoordenadaY()); 
+	       		}      	 	        		 
+	       	}
+	  	}
+	    return bHundido;
+	}
+
+
+	public boolean juegoTramposo(boolean tocado, boolean hundido,String respuesta){// devuelve boolean if juegoTramposo break
+		boolean terminar=false;
+		
+	    if (tocado && respuesta.equalsIgnoreCase("T")){
+	    	terminar=false;
+	    }
+	    else if (hundido && respuesta.equalsIgnoreCase("H")){
+	    	terminar=false;
+	    }
+	    else if (!tocado && respuesta.equalsIgnoreCase("A")){
+	    	terminar=false;
+	    }
+	    else {
+	    	terminar=true;
+	    	System.out.println("Esta usted despistado o haciendo trampas. El juego acaba aqui...");	    	    	
+	    }
+	    return terminar;
+	}
+
+
 }
 
